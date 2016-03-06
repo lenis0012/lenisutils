@@ -43,7 +43,7 @@ public class Registry {
     protected void registerModules(boolean local, Class<? extends Module>... modules) {
         for(Class<? extends Module> moduleClass : modules) {
             try {
-                Module instance = moduleClass.getConstructor(PluginHolder.class).newInstance(plugin);
+                Module instance = (Module) moduleClass.getConstructors()[0].newInstance(plugin);
                 instance.local = local;
                 moduleMap.put(moduleClass, instance);
             } catch(Exception e) {

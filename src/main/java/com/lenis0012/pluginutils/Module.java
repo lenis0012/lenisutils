@@ -8,11 +8,11 @@ import org.bukkit.event.Listener;
 import java.util.List;
 import java.util.logging.Logger;
 
-public abstract class Module {
-    protected PluginHolder plugin;
+public abstract class Module<T extends PluginHolder> {
+    protected T plugin;
     boolean local;
 
-    public Module(PluginHolder plugin) {
+    public Module(T plugin) {
         this.plugin = plugin;
     }
 

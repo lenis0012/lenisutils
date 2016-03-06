@@ -150,12 +150,7 @@ public class Configuration extends YamlConfiguration {
      * Save config to file
      */
     public void save() {
-        if(headers.isEmpty()) {
-            if(!mainHeader.isEmpty()) {
-                // Bukkit handles main headers
-                options().header(Joiner.on('\n').join(mainHeader));
-            }
-
+        if(headers.isEmpty() && mainHeader.isEmpty()) {
             try {
                 super.save(file);
             } catch(IOException e) {

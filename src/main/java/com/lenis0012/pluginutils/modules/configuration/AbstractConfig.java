@@ -1,16 +1,15 @@
 package com.lenis0012.pluginutils.modules.configuration;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import com.lenis0012.pluginutils.misc.Reflection;
 import com.lenis0012.pluginutils.modules.configuration.mapping.ConfigKey;
 import com.lenis0012.pluginutils.modules.configuration.mapping.ConfigMapper;
 
 import java.lang.reflect.Field;
-import java.util.Set;
+import java.util.List;
 
 public class AbstractConfig {
-    private final Set<Field> dataFields = Sets.newConcurrentHashSet();
+    private final List<Field> dataFields = Lists.newArrayList();
     private final ConfigMapper mapper;
     private final Configuration config;
     private boolean clearOnSave = false;
@@ -47,7 +46,7 @@ public class AbstractConfig {
     public void reload() {
         config.reload();
         if(mapper.header().length > 0) {
-            config.options().header(Joiner.on('\n').join(mapper.header()));
+            config.mainHeader(mapper.header());
         }
 
         // Load values
