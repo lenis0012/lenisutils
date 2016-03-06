@@ -1,5 +1,6 @@
 package com.lenis0012.pluginutils.modules.configuration.mapping;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.lenis0012.pluginutils.misc.Reflection;
@@ -8,8 +9,7 @@ import com.lenis0012.pluginutils.modules.configuration.AutoSavePolicy;
 import com.lenis0012.pluginutils.modules.configuration.Configuration;
 
 import java.lang.reflect.Field;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class InternalMapper {
     private final Map<Class<?>, SettingsHolder> holders = Maps.newConcurrentMap();
@@ -49,7 +49,7 @@ public class InternalMapper {
     }
 
     protected static class SettingsHolder {
-        private final Set<ConfigOption> options = Sets.newConcurrentHashSet();
+        private final List<ConfigOption> options = Lists.newArrayList();
         private final Configuration config;
         private final AutoSavePolicy autoSave;
 

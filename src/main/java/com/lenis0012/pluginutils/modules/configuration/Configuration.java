@@ -15,12 +15,31 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 public class Configuration extends YamlConfiguration {
+    private List<String> mainHeader = Lists.newArrayList();
     private final Map<String, List<String>> headers = Maps.newConcurrentMap();
     private final File file;
     private boolean loadHeaders;
 
     public Configuration(File file) {
         this.file = file;
+    }
+
+    /**
+     * Set the main header displayed at top of config.
+     *
+     * @param header header
+     */
+    public void mainHeader(String... header) {
+        mainHeader = Arrays.asList(header);
+    }
+
+    /**
+     * Get main header displayed at top of config.
+     *
+     * @return header
+     */
+    public List<String> mainHeader() {
+        return mainHeader;
     }
 
     /**
@@ -81,18 +100,18 @@ public class Configuration extends YamlConfiguration {
         // Parse headers
         final int indentLength = options().indent();
         final String pathSeparator = Character.toString(options().pathSeparator());
-        boolean passedMainHeaders = false;
         int currentIndents = 0;
         String key = "";
         List<String> headers = Lists.newArrayList();
         for(String line : contents.split("\n")) {
+            if(line.isEmpty()) continue; // Skip empty lines
             int indent = getSuccessiveCharCount(line, ' ');
-
             String subline = indent > 0 ? line.substring(indent) : line;
             if(subline.startsWith("#")) {
-                if(!passedMainHeaders) {
-                    memoryData.append(line).append('\n');
-                    return; // Main header, handled by bukkit
+                if(subline.startsWith("#>")) {
+                    String txt = subline.startsWith("#> ") ? subline.substring(3) : subline.substring(2);
+                    mainHeader.add(txt);
+                    continue; // Main header, handled by bukkit
                 }
 
                 // Add header to list
@@ -101,7 +120,6 @@ public class Configuration extends YamlConfiguration {
                 continue;
             }
 
-            passedMainHeaders = true;
             int indents = indent / indentLength;
             if(indents <= currentIndents) {
                 // Remove last section of key
@@ -133,6 +151,11 @@ public class Configuration extends YamlConfiguration {
      */
     public void save() {
         if(headers.isEmpty()) {
+            if(!mainHeader.isEmpty()) {
+                // Bukkit handles main headers
+                options().header(Joiner.on('\n').join(mainHeader));
+            }
+
             try {
                 super.save(file);
             } catch(IOException e) {
@@ -148,7 +171,13 @@ public class Configuration extends YamlConfiguration {
         StringBuilder fileData = new StringBuilder(buildHeader());
         int currentIndents = 0;
         String key = "";
+        for(String h : mainHeader) {
+            // Append main header to top of file
+            fileData.append("#> ").append(h).append('\n');
+        }
+
         for(String line : content.split("\n")) {
+            if(line.isEmpty()) continue; // Skip empty lines
             int indent = getSuccessiveCharCount(line, ' ');
             int indents = indent / indentLength;
             String indentText = indent > 0 ? line.substring(0, indent) : "";
