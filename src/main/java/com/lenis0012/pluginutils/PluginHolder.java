@@ -3,6 +3,16 @@ package com.lenis0012.pluginutils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class PluginHolder extends JavaPlugin {
+    private static PluginHolder instance;
+
+    private static void setInstance(PluginHolder instance) {
+        PluginHolder.instance = instance;
+    }
+
+    public static PluginHolder getInstance() {
+        return instance;
+    }
+
     protected final Registry registry;
 
     public PluginHolder(Class<? extends Module>... modules) {
