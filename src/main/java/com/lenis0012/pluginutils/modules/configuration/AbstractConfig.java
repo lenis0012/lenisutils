@@ -2,6 +2,7 @@ package com.lenis0012.pluginutils.modules.configuration;
 
 import com.google.common.collect.Lists;
 import com.lenis0012.pluginutils.misc.Reflection;
+import com.lenis0012.pluginutils.modules.configuration.mapping.ConfigHeader;
 import com.lenis0012.pluginutils.modules.configuration.mapping.ConfigKey;
 import com.lenis0012.pluginutils.modules.configuration.mapping.ConfigMapper;
 
@@ -18,8 +19,17 @@ public class AbstractConfig {
         this.mapper = getClass().getAnnotation(ConfigMapper.class);
         this.config = module.getConfiguration(mapper.fileName());
         for(Field field : getClass().getDeclaredFields()) {
-            if(!field.isAnnotationPresent(ConfigKey.class)) {
+            ConfigKey key = field.getAnnotation(ConfigKey.class);
+            if(key == null) {
                 continue;
+            }
+
+            // Headers
+            String keyPath = key.path().isEmpty() ? toConfigString(field.getName()) : key.path();
+            ConfigHeader header = field.getAnnotation(ConfigHeader.class);
+            if(header != null) {
+                String path = header.path().isEmpty() ? keyPath : header.path();
+                config.header(path, header.value());
             }
 
             field.setAccessible(true);

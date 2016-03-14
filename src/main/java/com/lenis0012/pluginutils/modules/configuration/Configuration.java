@@ -22,6 +22,14 @@ public class Configuration extends YamlConfiguration {
 
     public Configuration(File file) {
         this.file = file;
+        file.getParentFile().mkdirs();
+        if(!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
