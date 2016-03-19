@@ -15,8 +15,7 @@ public class InternalMapper {
     private final Map<Class<?>, SettingsHolder> holders = Maps.newConcurrentMap();
 
     public void registerSettingsClass(Class<?> settingsClass, Configuration config, AutoSavePolicy autoSave) {
-        ClassReflection reflection = new ClassReflection(settingsClass);
-        SettingsHolder holder = new SettingsHolder(config, autoSave, reflection);
+        SettingsHolder holder = new SettingsHolder(config, autoSave, settingsClass);
         holders.put(settingsClass, holder);
     }
 
@@ -53,20 +52,21 @@ public class InternalMapper {
         private final Configuration config;
         private final AutoSavePolicy autoSave;
 
-        public SettingsHolder(Configuration config, AutoSavePolicy autoSave, ClassReflection reflection) {
+        public SettingsHolder(Configuration config, AutoSavePolicy autoSave, Class<?> settingsClass) {
             this.config = config;
             this.autoSave = autoSave;
-            registerOptions(reflection);
+            registerOptions(settingsClass);
         }
 
         public AutoSavePolicy getAutoSave() {
             return autoSave;
         }
 
-        private void registerOptions(ClassReflection reflection) {
+        private void registerOptions(Class<?> settingsClass) {
             final String seperator = Character.toString(config.options().pathSeparator());
-            for(Field field : reflection.getFields()) {
+            for(Field field : settingsClass.getFields()) {
                 if(ConfigOption.class.isAssignableFrom(field.getType())) {
+                    System.out.println(field.getName());
                     // Validate
                     ConfigOption<?> value = Reflection.getFieldValue(field, null, ConfigOption.class);
                     if(value == null) {
@@ -85,7 +85,6 @@ public class InternalMapper {
                     }
                 }
             }
-            Collections.reverse(options); // reverse order
         }
 
         public void load(boolean writeDefaults) {
