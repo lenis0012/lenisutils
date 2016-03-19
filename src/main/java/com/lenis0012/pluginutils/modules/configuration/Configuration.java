@@ -79,7 +79,7 @@ public class Configuration extends YamlConfiguration {
      * Reload config from file.
      */
     public void reload() {
-        reload(headers.isEmpty());
+        reload(headers.isEmpty() && mainHeader.isEmpty());
     }
 
     /**
@@ -98,11 +98,6 @@ public class Configuration extends YamlConfiguration {
 
     @Override
     public void loadFromString(String contents) throws InvalidConfigurationException {
-        if(!loadHeaders) {
-            super.loadFromString(contents);
-            return;
-        }
-
         StringBuilder memoryData = new StringBuilder();
 
         // Parse headers
@@ -116,6 +111,10 @@ public class Configuration extends YamlConfiguration {
             int indent = getSuccessiveCharCount(line, ' ');
             String subline = indent > 0 ? line.substring(indent) : line;
             if(subline.startsWith("#")) {
+                if(!loadHeaders) {
+                    // Not loading headers
+                    continue;
+                }
                 if(subline.startsWith("#>")) {
                     String txt = subline.startsWith("#> ") ? subline.substring(3) : subline.substring(2);
                     mainHeader.add(txt);
