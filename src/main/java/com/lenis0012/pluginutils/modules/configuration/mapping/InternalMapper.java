@@ -49,7 +49,7 @@ public class InternalMapper {
     }
 
     protected static class SettingsHolder {
-        private final List<ConfigOption> options = Lists.newArrayList();
+        private List<ConfigOption> options = Lists.newArrayList();
         private final Configuration config;
         private final AutoSavePolicy autoSave;
 
@@ -85,6 +85,7 @@ public class InternalMapper {
                     }
                 }
             }
+            Collections.reverse(options); // reverse order
         }
 
         public void load(boolean writeDefaults) {
