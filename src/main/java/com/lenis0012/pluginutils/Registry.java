@@ -55,12 +55,12 @@ public class Registry {
     protected void enableModules(boolean local) {
         for(Module module : new ArrayList<>(moduleMap.values())) {
             if(module.local != local) continue;
-            module.enable();
+            enableModule(module);
         }
 
         for(Module module : new ArrayList<>(moduleMap.values())) {
             if(module.local != local) continue;
-            module.enable();
+            enableModule(module);
         }
     }
 
@@ -68,12 +68,25 @@ public class Registry {
         for(Module module : new ArrayList<>(moduleMap.values())) {
             if(module.local != local) continue;
             module.disable();
+            module.enabled = false;
         }
 
         for(Module module : new ArrayList<>(moduleMap.values())) {
             if(module.local != local) continue;
             module.disable();
+            module.enabled = false;
         }
+    }
+
+    private void enableModule(Module module) {
+        if(module.enabled) return;
+        List<Class<? extends Module>> required = module.getRequiredModules();
+        for(Class<? extends Module> moduleClass : required) {
+            Module dep = moduleMap.get(moduleClass);
+            enableModule(dep);
+        }
+        module.enable();
+        module.enabled = true;
     }
 
     public <T extends Module> T getModule(Class<T> moduleClass) {

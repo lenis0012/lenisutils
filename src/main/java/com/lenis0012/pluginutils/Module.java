@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 public abstract class Module<T extends PluginHolder> {
     protected T plugin;
+    protected boolean enabled;
     boolean local;
 
     public Module(T plugin) {
