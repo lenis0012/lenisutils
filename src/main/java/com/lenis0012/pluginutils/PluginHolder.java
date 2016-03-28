@@ -16,6 +16,7 @@ public abstract class PluginHolder extends JavaPlugin {
     protected final Registry registry;
 
     public PluginHolder(Class<? extends Module>... modules) {
+        setInstance(this);
         this.registry = new Registry(this, getClassLoader());
         registry.registerModules(true, modules);
     }

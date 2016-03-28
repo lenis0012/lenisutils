@@ -26,6 +26,8 @@ public abstract class Command implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
         this.isPlayer = sender instanceof Player;
+        this.sender = sender;
+        this.args = args;
         if(!allowConsole && !isPlayer) {
             reply(false, "You must be a player to execute this command!");
             return true;
@@ -42,8 +44,6 @@ public abstract class Command implements CommandExecutor {
             return true;
         }
 
-        this.sender = sender;
-        this.args = args;
         try {
             execute();
         } catch(Exception e) {
@@ -58,7 +58,11 @@ public abstract class Command implements CommandExecutor {
         reply(true, message, args);
     }
 
-    protected void reply(boolean success, String message, Object... args) {
+    protected void reply(boolean success, Object message, Object... args) {
+        reply(sender, success, message, args);
+    }
+
+    protected void reply(CommandSender sender, boolean success, Object message, Object... args) {
         String text = prefix + (success ? successColor : errorColor).toString() +
                 ChatColor.translateAlternateColorCodes('&', String.format(message.toString(), args));
         sender.sendMessage(text);
