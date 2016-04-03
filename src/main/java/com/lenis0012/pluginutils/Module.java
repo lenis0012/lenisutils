@@ -21,6 +21,8 @@ public abstract class Module<T extends PluginHolder> {
 
     public abstract void disable();
 
+    public void reload() {}
+
     public List<Class<? extends Module>> getRequiredModules() {
         return Lists.newArrayList();
     }
