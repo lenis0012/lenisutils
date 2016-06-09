@@ -6,6 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.logging.Level;
+
 public abstract class Command implements CommandExecutor {
     private String usage = null;
     private String permission = null;
@@ -47,7 +49,8 @@ public abstract class Command implements CommandExecutor {
         try {
             execute();
         } catch(Exception e) {
-            reply(false, e.getMessage());
+            reply(false, "An error occured while executing this command, please contact an admin!");
+            Bukkit.getLogger().log(Level.SEVERE, "Error while running command", e);
         }
         return true;
     }

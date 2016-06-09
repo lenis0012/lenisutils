@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class Registry {
-    private final Map<Class<? extends Module>, Module> moduleMap = Maps.newConcurrentMap();
+    private final Map<Class<? extends Module>, Module> moduleMap = Maps.newLinkedHashMap();
     private final PluginHolder plugin;
     private final ClassLoader classLoader;
 
