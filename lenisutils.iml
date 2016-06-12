@@ -24,6 +24,5 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.8-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="updater-api" scope="PROVIDED" />
-    <orderEntry type="library" name="Maven: mkremins:fanciful:0.3.3-SNAPSHOT" level="project" />
   </component>
 </module>
