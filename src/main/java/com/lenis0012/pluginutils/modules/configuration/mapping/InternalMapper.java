@@ -66,7 +66,6 @@ public class InternalMapper {
             final String seperator = Character.toString(config.options().pathSeparator());
             for(Field field : settingsClass.getFields()) {
                 if(ConfigOption.class.isAssignableFrom(field.getType())) {
-                    System.out.println(field.getName());
                     // Validate
                     ConfigOption<?> value = Reflection.getFieldValue(field, null, ConfigOption.class);
                     if(value == null) {
