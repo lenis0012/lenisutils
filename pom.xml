@@ -6,7 +6,7 @@
 
     <groupId>com.lenis0012.bukkit</groupId>
     <artifactId>lenisutils</artifactId>
-    <version>1</version>
+    <version>1.0</version>
     <name>lenis' utils</name>
     <packaging>jar</packaging>
 
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>com.lenis0012.updater</groupId>
             <artifactId>updater-api</artifactId>
-            <version>1</version>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -62,10 +62,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5</version>
+                <version>3.7.0</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                 </configuration>
