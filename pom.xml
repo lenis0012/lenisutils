@@ -17,9 +17,16 @@
         </repository>
         <repository>
             <id>lenis0012-repo</id>
-            <url>http://ci.lenis0012.com/plugin/repository/everything/</url>
+            <url>https://dl.bintray.com/lenis0012/maven-releases</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-lenis0012-maven-releases</id>
+            <url>https://api.bintray.com/maven/lenis0012/maven-releases/lenisutils/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
