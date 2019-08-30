@@ -13,9 +13,9 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 public class PacketModule extends Module {
-    private final Method GET_HANDLE = Reflection.getCBMethod("entity.CraftPlayer", "getHandle");
-    private final Field PLAYER_CONNECTION = Reflection.getNMSField("EntityPlayer", "playerConnection");
-    private final Method SEND_PACKET = Reflection.getNMSMethod("PlayerConnection", "sendPacket", Reflection.getNMSClass("Packet"));
+    private Method GET_HANDLE;
+    private Field PLAYER_CONNECTION;
+    private Method SEND_PACKET;
     private final Map<String, ClassReflection> packetReflectionMap = Maps.newConcurrentMap();
 
     public PacketModule(PluginHolder plugin) {
@@ -24,6 +24,9 @@ public class PacketModule extends Module {
 
     @Override
     public void enable() {
+        GET_HANDLE = Reflection.getCBMethod("entity.CraftPlayer", "getHandle");
+        PLAYER_CONNECTION = Reflection.getNMSField("EntityPlayer", "playerConnection");
+        SEND_PACKET = Reflection.getNMSMethod("PlayerConnection", "sendPacket", Reflection.getNMSClass("Packet"));
     }
 
     @Override

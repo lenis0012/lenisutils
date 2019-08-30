@@ -6,7 +6,7 @@
 
     <groupId>com.lenis0012.bukkit</groupId>
     <artifactId>lenisutils</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <name>lenis' utils</name>
     <packaging>jar</packaging>
 
