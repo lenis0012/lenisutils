@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.janmm14.com.lenis0012.bukkit</groupId>
+    <groupId>com.lenis0012.bukkit</groupId>
     <artifactId>lenisutils</artifactId>
     <version>1.0.1</version>
     <name>lenis' utils</name>
@@ -16,17 +16,10 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>lenis0012-repo</id>
-            <url>https://dl.bintray.com/lenis0012/maven-releases</url>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
     </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>bintray-lenis0012-maven-releases</id>
-            <url>https://api.bintray.com/maven/lenis0012/maven-releases/lenisutils/;publish=1</url>
-        </repository>
-    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -41,12 +34,6 @@
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>com.lenis0012.updater</groupId>
-            <artifactId>updater-api</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>-->
     </dependencies>
 
     <build>
