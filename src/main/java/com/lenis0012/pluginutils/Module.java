@@ -37,7 +37,7 @@ public abstract class Module<T extends PluginHolder> {
         }
     }
 
-    protected Logger logger() {
+    public Logger logger() {
         return plugin.getLogger();
     }
 }
