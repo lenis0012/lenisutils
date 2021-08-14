@@ -18,6 +18,7 @@
         <module>config</module>
         <module>command</module>
         <module>packet</module>
+        <module>sql</module>
     </modules>
 
     <repositories>
