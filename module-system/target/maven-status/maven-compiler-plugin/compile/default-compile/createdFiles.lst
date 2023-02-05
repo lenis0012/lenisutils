@@ -1,0 +1,5 @@
+com/lenis0012/pluginutils/modules/ModuleRegistry.class
+com/lenis0012/pluginutils/modules/Module.class
+com/lenis0012/pluginutils/modules/ModularPlugin.class
+com/lenis0012/pluginutils/modules/misc/Reflection.class
+com/lenis0012/pluginutils/modules/misc/Reflection$ClassReflection.class

@@ -26,7 +26,7 @@ public class AbstractConfig {
     protected AbstractConfig(ConfigurationModule module) {
         this.mapper = getClass().getAnnotation(ConfigMapper.class);
         this.config = module.getConfiguration(mapper.fileName());
-        this.logger = module.getLogger();
+        this.logger = module.logger();
         loadSectionKeys(getClass(), "");
     }
 
@@ -110,8 +110,6 @@ public class AbstractConfig {
     public void save() {
         // Set values
         saveSection(config, this);
-        config.getOfflinePlayer()
-
         config.save();
     }
     

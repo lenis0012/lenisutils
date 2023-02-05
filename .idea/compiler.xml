@@ -6,8 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="lenisutils-module-system" />
+        <module name="lenisutils-command" />
         <module name="module-system" />
         <module name="config" />
+        <module name="lenisutils-config" />
+        <module name="lenisutils-packet" />
       </profile>
     </annotationProcessing>
   </component>

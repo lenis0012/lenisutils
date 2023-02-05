@@ -1,0 +1,10 @@
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/AutoSavePolicy.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/mapping/ConfigHeader.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/mapping/ConfigSection.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/AbstractConfig.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/Configuration.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/ConfigurationModule.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/mapping/ConfigMapper.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/mapping/ConfigOption.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/mapping/ConfigKey.java
+/home/lennart/Projects/lenisutils/config/src/main/java/com/lenis0012/pluginutils/config/mapping/InternalMapper.java

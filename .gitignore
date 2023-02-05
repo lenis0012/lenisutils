@@ -1,5 +1,8 @@
-### Eclipse template
+# Custom
+.idea/
+*.iml
 
+### Eclipse template
 .metadata
 bin/
 tmp/
