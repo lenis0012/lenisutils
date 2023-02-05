@@ -2,8 +2,7 @@ package com.lenis0012.pluginutils.packet;
 
 import com.google.common.collect.Maps;
 import com.lenis0012.pluginutils.modules.ModularPlugin;
-import com.lenis0012.pluginutils.modules.Module;
-import com.lenis0012.pluginutils.packet.Reflection.ClassReflection;
+import com.lenis0012.pluginutils.packet.PacketReflection.ClassReflection;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -11,25 +10,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class PacketModule extends Module<ModularPlugin> {
+public class PacketManager {
     private Method GET_HANDLE;
     private Field PLAYER_CONNECTION;
     private Method SEND_PACKET;
     private final Map<String, ClassReflection> packetReflectionMap = Maps.newConcurrentMap();
 
-    public PacketModule(ModularPlugin plugin) {
-        super(plugin);
-    }
-
-    @Override
-    public void enable() {
-        GET_HANDLE = Reflection.getCBMethod("entity.CraftPlayer", "getHandle");
-        PLAYER_CONNECTION = Reflection.getNMSField("EntityPlayer", "playerConnection");
-        SEND_PACKET = Reflection.getNMSMethod("PlayerConnection", "sendPacket", Reflection.getNMSClass("Packet"));
-    }
-
-    @Override
-    public void disable() {
+    public PacketManager(ModularPlugin plugin) {
+        GET_HANDLE = PacketReflection.getCBMethod("entity.CraftPlayer", "getHandle");
+        PLAYER_CONNECTION = PacketReflection.getNMSField("EntityPlayer", "playerConnection");
+        SEND_PACKET = PacketReflection.getNMSMethod("PlayerConnection", "sendPacket", PacketReflection.getNMSClass("Packet"));
     }
 
     /**
@@ -41,7 +31,7 @@ public class PacketModule extends Module<ModularPlugin> {
     public Packet createPacket(String name) {
         ClassReflection reflection = packetReflectionMap.get(name);
         if(reflection == null) {
-            reflection = new ClassReflection(Reflection.getNMSClass(name));
+            reflection = new ClassReflection(PacketReflection.getNMSClass(name));
             packetReflectionMap.put(name, reflection);
         }
 
@@ -56,9 +46,9 @@ public class PacketModule extends Module<ModularPlugin> {
      * @param packet to send
      */
     public void sendPacket(Player player, Packet packet) {
-        Object entityPlayer = Reflection.invokeMethod(GET_HANDLE, player);
-        Object playerConnection = Reflection.getFieldValue(PLAYER_CONNECTION, entityPlayer);
-        Reflection.invokeMethod(SEND_PACKET, playerConnection, packet.getHandle());
+        Object entityPlayer = PacketReflection.invokeMethod(GET_HANDLE, player);
+        Object playerConnection = PacketReflection.getFieldValue(PLAYER_CONNECTION, entityPlayer);
+        PacketReflection.invokeMethod(SEND_PACKET, playerConnection, packet.getHandle());
     }
 
     /**

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class Reflection {
+public class PacketReflection {
     private static final String NMS_VERSION;
     private static final String NMS_ROOT;
     private static final String CB_ROOT;
@@ -160,11 +160,11 @@ public class Reflection {
         }
 
         public void setFieldValue(String fieldName, Object instance, Object value) {
-            Reflection.setFieldValue(getField(fieldName), instance, value);
+            PacketReflection.setFieldValue(getField(fieldName), instance, value);
         }
 
         public <T> T getFieldValue(String fieldName, Object instance, Class<T> type) {
-            return Reflection.getFieldValue(getField(fieldName), instance, type);
+            return PacketReflection.getFieldValue(getField(fieldName), instance, type);
         }
 
         public Method getMethod(String name) {

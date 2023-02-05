@@ -1,6 +1,6 @@
 package com.lenis0012.pluginutils.packet;
 
-import com.lenis0012.pluginutils.packet.Reflection.ClassReflection;
+import com.lenis0012.pluginutils.packet.PacketReflection.ClassReflection;
 
 public class Packet {
     private final ClassReflection reflection;
