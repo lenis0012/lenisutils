@@ -1,10 +1,10 @@
 package com.lenis0012.pluginutils.packet;
 
 import com.google.common.collect.Maps;
-import com.lenis0012.pluginutils.modules.ModularPlugin;
 import com.lenis0012.pluginutils.packet.PacketReflection.ClassReflection;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,7 +16,7 @@ public class PacketManager {
     private Method SEND_PACKET;
     private final Map<String, ClassReflection> packetReflectionMap = Maps.newConcurrentMap();
 
-    public PacketManager(ModularPlugin plugin) {
+    public PacketManager(Plugin plugin) {
         GET_HANDLE = PacketReflection.getCBMethod("entity.CraftPlayer", "getHandle");
         PLAYER_CONNECTION = PacketReflection.getNMSField("EntityPlayer", "playerConnection");
         SEND_PACKET = PacketReflection.getNMSMethod("PlayerConnection", "sendPacket", PacketReflection.getNMSClass("Packet"));
