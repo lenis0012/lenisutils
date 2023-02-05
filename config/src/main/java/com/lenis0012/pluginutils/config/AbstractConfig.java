@@ -4,10 +4,13 @@ import com.lenis0012.pluginutils.config.mapping.ConfigHeader;
 import com.lenis0012.pluginutils.config.mapping.ConfigKey;
 import com.lenis0012.pluginutils.config.mapping.ConfigMapper;
 import com.lenis0012.pluginutils.config.mapping.ConfigSection;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.Plugin;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +26,21 @@ public class AbstractConfig {
     private final Logger logger;
     private boolean clearOnSave = false;
 
+    /**
+     * @deprecated use {@link #AbstractConfig(Plugin)}
+     */
+    @Deprecated
     protected AbstractConfig(ConfigurationModule module) {
         this.mapper = getClass().getAnnotation(ConfigMapper.class);
         this.config = module.getConfiguration(mapper.fileName());
         this.logger = module.logger();
+        loadSectionKeys(getClass(), "");
+    }
+
+    protected AbstractConfig(@NonNull Plugin plugin) {
+        this.mapper = getClass().getAnnotation(ConfigMapper.class);
+        this.config = new CommentConfiguration(new File(plugin.getDataFolder(), mapper.fileName()));
+        this.logger = plugin.getLogger();
         loadSectionKeys(getClass(), "");
     }
 

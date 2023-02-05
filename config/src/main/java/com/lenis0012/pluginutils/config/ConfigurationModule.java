@@ -3,6 +3,7 @@ package com.lenis0012.pluginutils.config;
 import com.lenis0012.pluginutils.config.mapping.InternalMapper;
 import com.lenis0012.pluginutils.modules.ModularPlugin;
 import com.lenis0012.pluginutils.modules.Module;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +47,12 @@ public class ConfigurationModule extends Module {
     }
 
     public <T extends AbstractConfig> T createCustomConfig(Class<T> configClass) {
+        try {
+            Constructor<T> constructor = configClass.getConstructor(Plugin.class);
+            return constructor.newInstance(plugin);
+        } catch (Exception e) {
+            // Ignore
+        }
         try {
             Constructor<T> constructor = configClass.getConstructor(ConfigurationModule.class);
             return constructor.newInstance(this);
