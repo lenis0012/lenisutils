@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-public class Configuration extends YamlConfiguration {
+public class CommentConfiguration extends YamlConfiguration {
     private List<String> mainHeader = Lists.newArrayList();
     private final Map<String, List<String>> headers = Maps.newConcurrentMap();
     private final File file;
     private boolean loadHeaders;
 
-    public Configuration(File file) {
+    public CommentConfiguration(File file) {
         this.file = file;
         file.getParentFile().mkdirs();
         if(!file.exists()) {

@@ -1,10 +1,10 @@
 package com.lenis0012.pluginutils.config;
 
-import com.lenis0012.pluginutils.modules.misc.Reflection;
 import com.lenis0012.pluginutils.config.mapping.ConfigHeader;
 import com.lenis0012.pluginutils.config.mapping.ConfigKey;
 import com.lenis0012.pluginutils.config.mapping.ConfigMapper;
 import com.lenis0012.pluginutils.config.mapping.ConfigSection;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 public class AbstractConfig {
     private final Map<Class<?>, List<Field>> dataFields = new HashMap<>();
     private final ConfigMapper mapper;
-    private final Configuration config;
+    private final CommentConfiguration config;
     private final Logger logger;
     private boolean clearOnSave = false;
 
@@ -82,6 +82,7 @@ public class AbstractConfig {
         reloadSection(config, this);
     }
 
+    @SneakyThrows
     private void reloadSection(ConfigurationSection source, Object target) {
         for(Field field : dataFields.get(target.getClass())) {
             ConfigKey key = field.getAnnotation(ConfigKey.class);
@@ -96,13 +97,12 @@ public class AbstractConfig {
                 try {
                     Object result = field.getType().getDeclaredConstructor().newInstance();
                     reloadSection((ConfigurationSection) value, result);
-                    Reflection.setFieldValue(field, target, result);
+                    field.set(target, result);
                 } catch (Exception e) {
                     Bukkit.getLogger().log(Level.WARNING, "Failed to load property \"" + path + "\" from " + mapper.fileName());
-
                 }
             } else {
-                Reflection.setFieldValue(field, target, value);
+                field.set(target, value);
             }
         }
     }
@@ -112,7 +112,8 @@ public class AbstractConfig {
         saveSection(config, this);
         config.save();
     }
-    
+
+    @SneakyThrows
     private void saveSection(ConfigurationSection target, Object source) {
         for(Field field : dataFields.get(source.getClass())) {
             ConfigKey key = field.getAnnotation(ConfigKey.class);
@@ -123,9 +124,10 @@ public class AbstractConfig {
                 if(section == null) {
                     section = target.createSection(path);
                 }
-                saveSection(section, Reflection.getFieldValue(field, source));
+                Object sourceValue = field.get(source);
+                saveSection(section, sourceValue);
             } else {
-                target.set(path, Reflection.getFieldValue(field, source));
+                target.set(path, field.get(source));
             }
         }
     }

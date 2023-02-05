@@ -3,8 +3,7 @@ package com.lenis0012.pluginutils.packet;
 import com.google.common.collect.Maps;
 import com.lenis0012.pluginutils.modules.ModularPlugin;
 import com.lenis0012.pluginutils.modules.Module;
-import com.lenis0012.pluginutils.modules.misc.Reflection;
-import com.lenis0012.pluginutils.modules.misc.Reflection.ClassReflection;
+import com.lenis0012.pluginutils.packet.Reflection.ClassReflection;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 

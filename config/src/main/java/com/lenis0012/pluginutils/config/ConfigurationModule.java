@@ -32,7 +32,7 @@ public class ConfigurationModule extends Module {
      * @param fileName Name of file
      * @return Configuration
      */
-    public Configuration getConfiguration(String fileName) {
+    public CommentConfiguration getConfiguration(String fileName) {
         File file = new File(plugin.getDataFolder(), fileName);
         file.getParentFile().mkdirs();
         if(!file.exists()) {
@@ -42,7 +42,7 @@ public class ConfigurationModule extends Module {
                 plugin.getLogger().log(Level.WARNING, "Failed to create config file", e);
             }
         }
-        return new Configuration(file);
+        return new CommentConfiguration(file);
     }
 
     public <T extends AbstractConfig> T createCustomConfig(Class<T> configClass) {

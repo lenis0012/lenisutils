@@ -2,9 +2,9 @@ package com.lenis0012.pluginutils.config.mapping;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.lenis0012.pluginutils.modules.misc.Reflection;
 import com.lenis0012.pluginutils.config.AutoSavePolicy;
-import com.lenis0012.pluginutils.config.Configuration;
+import com.lenis0012.pluginutils.config.CommentConfiguration;
+import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -12,7 +12,7 @@ import java.util.*;
 public class InternalMapper {
     private final Map<Class<?>, SettingsHolder> holders = Maps.newConcurrentMap();
 
-    public void registerSettingsClass(Class<?> settingsClass, Configuration config, AutoSavePolicy autoSave) {
+    public void registerSettingsClass(Class<?> settingsClass, CommentConfiguration config, AutoSavePolicy autoSave) {
         SettingsHolder holder = new SettingsHolder(config, autoSave, settingsClass);
         holders.put(settingsClass, holder);
     }
@@ -47,10 +47,10 @@ public class InternalMapper {
 
     protected static class SettingsHolder {
         private List<ConfigOption> options = Lists.newArrayList();
-        private final Configuration config;
+        private final CommentConfiguration config;
         private final AutoSavePolicy autoSave;
 
-        public SettingsHolder(Configuration config, AutoSavePolicy autoSave, Class<?> settingsClass) {
+        public SettingsHolder(CommentConfiguration config, AutoSavePolicy autoSave, Class<?> settingsClass) {
             this.config = config;
             this.autoSave = autoSave;
             registerOptions(settingsClass);
@@ -60,12 +60,13 @@ public class InternalMapper {
             return autoSave;
         }
 
+        @SneakyThrows
         private void registerOptions(Class<?> settingsClass) {
             final String seperator = Character.toString(config.options().pathSeparator());
             for(Field field : settingsClass.getFields()) {
                 if(ConfigOption.class.isAssignableFrom(field.getType())) {
                     // Validate
-                    ConfigOption<?> value = Reflection.getFieldValue(field, null, ConfigOption.class);
+                    ConfigOption<?> value = (ConfigOption<?>) field.get(null);
                     if(value == null) {
                         continue;
                     }

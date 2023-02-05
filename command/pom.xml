@@ -17,6 +17,7 @@
             <groupId>com.lenis0012.pluginutils</groupId>
             <artifactId>lenisutils-module-system</artifactId>
             <version>${parent.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

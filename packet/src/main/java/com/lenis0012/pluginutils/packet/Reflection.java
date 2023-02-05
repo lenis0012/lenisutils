@@ -1,4 +1,4 @@
-package com.lenis0012.pluginutils.modules.misc;
+package com.lenis0012.pluginutils.packet;
 
 import com.google.common.collect.Maps;
 import org.bukkit.Bukkit;
