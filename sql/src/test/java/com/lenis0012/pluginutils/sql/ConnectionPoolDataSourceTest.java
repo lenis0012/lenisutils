@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.mockito.Mockito;
 
 import java.sql.Connection;
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@Ignore
+@DisabledIf("isCursesMissing")
 class ConnectionPoolDataSourceTest {
     private static DB db;
 
@@ -37,6 +38,17 @@ class ConnectionPoolDataSourceTest {
     @AfterAll
     static void shutdownDB() throws Exception {
         db.stop();
+    }
+
+    static boolean isCursesMissing() {
+        // Check if libncurses-5 is installed
+        try {
+            Process process = Runtime.getRuntime().exec("ldd /usr/lib/libncurses.so.5");
+            process.waitFor();
+            return process.exitValue() != 0;
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     private Plugin plugin;
