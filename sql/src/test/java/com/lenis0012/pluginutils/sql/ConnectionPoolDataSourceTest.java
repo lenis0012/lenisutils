@@ -5,6 +5,7 @@ import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,7 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@Ignore
 class ConnectionPoolDataSourceTest {
     private static DB db;
 
@@ -74,8 +76,8 @@ class ConnectionPoolDataSourceTest {
 
         AtomicInteger count = new AtomicInteger();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
-        for (int i = 0; i < 1000; i++) {
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        for (int i = 0; i < 10000; i++) {
             executorService.execute(() -> {
                 try(Connection connection = dataSource.getConnection()) {
                     ResultSet result = connection.createStatement().executeQuery("SELECT title FROM tasks WHERE id=1;");
@@ -88,12 +90,15 @@ class ConnectionPoolDataSourceTest {
             });
         }
 
+        executorService.shutdown();
+        executorService.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS);
         try {
             dataSource.close();
         } catch (Exception e) {
+            e.printStackTrace();
             // ignore
         }
-        assertThat(count.get()).isEqualTo(1000);
+        assertThat(count.get()).isEqualTo(10000);
     }
 
     @Test

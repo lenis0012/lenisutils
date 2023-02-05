@@ -18,7 +18,7 @@ public class SqlPooledConnection implements PooledConnection {
     private long lastUsedTime;
     private final Connection physicalConnection;
     private final Connection proxyConnection;
-    private final List<ConnectionEventListener> connectionEventListeners = Collections.synchronizedList(new ArrayList<>());
+    private final List<ConnectionEventListener> connectionEventListeners = new ArrayList<>();
 
     public SqlPooledConnection(Connection physicalConnection, ClassLoader classLoader) {
         this.physicalConnection = physicalConnection;
@@ -26,9 +26,11 @@ public class SqlPooledConnection implements PooledConnection {
             if(method.getName().equals("close")) {
                 // Return connection to pool
                 this.lastUsedTime = System.currentTimeMillis();
-                for (ConnectionEventListener listener : connectionEventListeners) {
-                    listener.connectionClosed(new ConnectionEvent(this));
-                }
+//                synchronized (connectionEventListeners) {
+                    for (ConnectionEventListener listener : connectionEventListeners) {
+                        listener.connectionClosed(new ConnectionEvent(this));
+                    }
+//                }
                 return null;
             } else {
                 try {
@@ -38,7 +40,9 @@ public class SqlPooledConnection implements PooledConnection {
                         for (ConnectionEventListener listener : connectionEventListeners) {
                             listener.connectionErrorOccurred(new ConnectionEvent(this, (SQLException) e.getCause()));
                         }
-                        connectionEventListeners.clear();
+//                        synchronized (connectionEventListeners) {
+                            connectionEventListeners.clear();
+//                        }
                     }
 
                     throw e.getCause();
@@ -63,18 +67,24 @@ public class SqlPooledConnection implements PooledConnection {
 
     @Override
     public void close() throws SQLException {
-        connectionEventListeners.clear();
+//        synchronized (connectionEventListeners) {
+            connectionEventListeners.clear();
+//        }
         physicalConnection.close();
     }
 
     @Override
     public void addConnectionEventListener(ConnectionEventListener listener) {
-        connectionEventListeners.add(listener);
+//        synchronized (connectionEventListeners) {
+            connectionEventListeners.add(listener);
+//        }
     }
 
     @Override
     public void removeConnectionEventListener(ConnectionEventListener listener) {
-        connectionEventListeners.remove(listener);
+//        synchronized (connectionEventListeners) {
+            connectionEventListeners.remove(listener);
+//        }
     }
 
     @Override
