@@ -45,6 +45,16 @@ class ConnectionPoolDataSourceTest {
         try {
             Process process = Runtime.getRuntime().exec("ldd /usr/lib/libncurses.so.5");
             process.waitFor();
+            if (process.exitValue() == 0) {
+                return false;
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+
+        try {
+            Process process = Runtime.getRuntime().exec("ldd /usr/lib/x86_64-linux-gnu/libncurses.so.5");
+            process.waitFor();
             return process.exitValue() != 0;
         } catch (Exception e) {
             return true;

@@ -1,11 +1,14 @@
 package com.lenis0012.pluginutils.sql;
 
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.DataSource;
+import javax.sql.PooledConnection;
+import java.io.Closeable;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.concurrent.BlockingDeque;
@@ -15,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ConnectionPoolDataSource implements DataSource, ConnectionEventListener {
+public class ConnectionPoolDataSource implements DataSource, ConnectionEventListener, Closeable {
     private final BlockingDeque<SqlPooledConnection> connections = new LinkedBlockingDeque<>();
     private final AtomicInteger availableCapacity;
     private final Plugin plugin;
@@ -43,8 +46,11 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
             DriverManager.setLoginTimeout(connectionTimeout / 1000);
         }
         this.maintenanceTask = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            SqlPooledConnection last = connections.peekLast();
+            boolean validationNeeded = last != null && last.getLastUsedTime() > System.currentTimeMillis() - validationBypassThreshold;
+
             // Verify all connections
-            while(true) {
+            while(validationNeeded) {
                 SqlPooledConnection connection = connections.pollLast();
                 if (connection == null) {
                     break;
@@ -162,6 +168,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
         tryClose(connection);
     }
 
+    @Override
     public void close() {
         maintenanceTask.cancel();
         try {

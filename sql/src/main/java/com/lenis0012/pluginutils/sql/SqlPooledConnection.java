@@ -60,6 +60,10 @@ public class SqlPooledConnection implements PooledConnection {
         return lastUsedTime;
     }
 
+    public Connection getPhysicalConnection() {
+        return physicalConnection;
+    }
+
     @Override
     public Connection getConnection() throws SQLException {
         return proxyConnection;
