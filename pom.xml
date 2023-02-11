@@ -69,8 +69,8 @@
     <scm>
         <url>https://github.com/lenis0012/lenisutils</url>
         <developerConnection>scm:git:ssh://git@github.com/lenisutils.git</developerConnection>
-      <tag>v2.0.0</tag>
-  </scm>
+        <tag>v2.0.0</tag>
+    </scm>
 
     <distributionManagement>
         <repository>
