@@ -55,6 +55,7 @@
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                     <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                     <username>lenis0012</username>
+                    <scmCommentPrefix>chore(release): </scmCommentPrefix>
                 </configuration>
             </plugin>
             <plugin>
