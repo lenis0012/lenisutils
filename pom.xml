@@ -68,6 +68,11 @@
         </plugins>
     </build>
 
+    <scm>
+        <url>https://github.com/lenis0012/lenisutils</url>
+        <developerConnection>scm:git:ssh://git@github.com:lenis0012/lenisutils.git</developerConnection>
+    </scm>
+
     <distributionManagement>
         <repository>
             <id>codemc-releases</id>
