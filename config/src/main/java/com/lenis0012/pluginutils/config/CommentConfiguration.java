@@ -8,6 +8,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -203,20 +205,11 @@ public class CommentConfiguration extends YamlConfiguration {
         }
 
         // Write data to file
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(file);
+        try (Writer writer = new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8)) {
             writer.write(fileData.toString());
             writer.flush();
         } catch(IOException e) {
             Bukkit.getLogger().log(Level.WARNING, "Failed to save file", e);
-        } finally {
-            if(writer != null) {
-                try {
-                    writer.close();
-                } catch(IOException e) {
-                }
-            }
         }
     }
 
