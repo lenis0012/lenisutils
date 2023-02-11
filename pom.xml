@@ -56,6 +56,7 @@
                     <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                     <username>lenis0012</username>
                     <scmCommentPrefix>chore(release): </scmCommentPrefix>
+                    <pushChanges>false</pushChanges>
                 </configuration>
             </plugin>
             <plugin>
