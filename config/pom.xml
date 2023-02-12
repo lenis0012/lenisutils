@@ -12,6 +12,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.lenis0012.pluginutils</groupId>
             <artifactId>lenisutils-module-system</artifactId>
             <version>${parent.version}</version>
