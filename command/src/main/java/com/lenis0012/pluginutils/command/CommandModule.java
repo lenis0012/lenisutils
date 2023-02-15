@@ -1,6 +1,5 @@
 package com.lenis0012.pluginutils.command;
 
-import com.destroystokyo.paper.event.server.AsyncTabCompleteEvent;
 import com.lenis0012.pluginutils.modules.ModularPlugin;
 import com.lenis0012.pluginutils.modules.Module;
 
