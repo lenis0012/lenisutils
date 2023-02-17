@@ -29,9 +29,6 @@ echo >> CHANGELOG.md
 echo "## [$NEXT_VERSION](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)" >> CHANGELOG.md
 (./git-semver log --markdown) >> CHANGELOG.md
 
-# Replace version number occurrences in README.md
-sed -i "s/$CURRENT_VERSION/$NEXT_VERSION/g" README.md
-
 echo Committing changes
 git add -A
 git commit -m "chore(release): release v$NEXT_VERSION"
@@ -41,11 +38,11 @@ git push --follow-tags origin master
 echo "Waiting 60 seconds before bumping dev version"
 sleep 60
 
-DEV_VERSION=$(./git-semver next --pre-release-tag=SNAPSHOT)
+DEV_VERSION=$(echo ${NEXT_VERSION} | awk -F. -v OFS=. '{$NF += 1 ; print}')
 echo "Bumping dev version to $DEV_VERSION"
 mvn versions:set -DnewVersion=$DEV_VERSION -DgenerateBackupPoms=false > /dev/null
 git add -A
-git commit -m "chore(release): prepare for next development iteration [skip ci]"
+git commit -m "chore(release): prepare for next development iteration [ci skip]"
 git push origin master
 
 echo "Done!"
