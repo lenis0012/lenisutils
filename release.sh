@@ -13,7 +13,8 @@ then
     exit 1
 fi
 
-CHANGES=$(./git-semver log --markdown)
+echo "\n### [2.1.3](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)"
+./git-semver log --markdown > CHANGELOG.md
 echo "TEST"
 
 #npx @dwmkerr/standard-version --packageFiles pom.xml --bumpFiles pom.xml
