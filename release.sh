@@ -21,13 +21,16 @@ then
     exit 1
 fi
 
+echo Updating maven version
+mvn versions:set -DnewVersion=$NEXT_VERSION -DgenerateBackupPoms=false > /dev/null
+
 echo Updating changelog
 echo >> CHANGELOG.md
 echo "## [$NEXT_VERSION](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)" >> CHANGELOG.md
 (./git-semver log --markdown) >> CHANGELOG.md
 
-echo Updating maven version
-mvn versions:set -DnewVersion=$NEXT_VERSION -DgenerateBackupPoms=false > /dev/null
+# Replace version number occurrences in README.md
+sed -i "s/$CURRENT_VERSION/$NEXT_VERSION/g" README.md
 
 echo Committing changes
 git add -A
