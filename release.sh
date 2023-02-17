@@ -11,7 +11,7 @@ fi
 CURRENT_VERSION=$(./git-semver latest)
 NEXT_VERSION=$(./git-semver next)
 echo "Getting ready to update from v$CURRENT_VERSION to v$NEXT_VERSION"
-echo $(./git-semver log)
+./git-semver log
 
 # Ask for confirmation
 read -p "Are you sure you want to release v$NEXT_VERSION? (y/n) " -n 1 -r
@@ -23,7 +23,7 @@ fi
 
 echo Updating changelog
 echo >> CHANGELOG.md
-echo "## [2.1.3](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)" >> CHANGELOG.md
+echo "## [$NEXT_VERSION](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)" >> CHANGELOG.md
 (./git-semver log --markdown) >> CHANGELOG.md
 
 echo Updating maven version
@@ -33,7 +33,7 @@ echo Committing changes
 git add -A
 git commit -m "chore: release v$NEXT_VERSION"
 git tag -a "v$NEXT_VERSION" -m "v$NEXT_VERSION"
-#git push --follow-tags origin master
+git push --follow-tags origin master
 
 echo "Waiting 60 seconds before bumping dev version"
 sleep 5
@@ -43,6 +43,6 @@ echo "Bumping dev version to $DEV_VERSION"
 mvn versions:set -DnewVersion=$DEV_VERSION -DgenerateBackupPoms=false > /dev/null
 git add -A
 git commit -m "chore: prepare for next development iteration"
-#git push --follow-tags origin master
+git push origin master
 
 echo "Done!"
