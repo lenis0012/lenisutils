@@ -27,6 +27,7 @@ public class DataSourceBuilder {
         builder.driver = "org.sqlite.JDBC";
         builder.jdbcUrlTemplate = "jdbc:sqlite:" + file.getPath();
         builder.validationBypassThreshold = Integer.MAX_VALUE;
+        builder.maxPoolSize = 1;
         return builder.build();
     }
 
