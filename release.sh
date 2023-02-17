@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Print error if uncommitted changes are found
+if [[ -n $(git status --porcelain) ]]
+then
+    echo "Uncommitted changes found, please commit or stash them before releasing"
+    exit 1
+fi
+
+# Get new version
 CURRENT_VERSION=$(./git-semver latest)
 NEXT_VERSION=$(./git-semver next)
 echo "Getting ready to update from v$CURRENT_VERSION to v$NEXT_VERSION"
@@ -13,14 +21,28 @@ then
     exit 1
 fi
 
-echo "\n### [2.1.3](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)"
-./git-semver log --markdown > CHANGELOG.md
-echo "TEST"
+echo Updating changelog
+echo >> CHANGELOG.md
+echo "## [2.1.3](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)" >> CHANGELOG.md
+(./git-semver log --markdown) >> CHANGELOG.md
 
-#npx @dwmkerr/standard-version --packageFiles pom.xml --bumpFiles pom.xml
+echo Updating maven version
+mvn versions:set -DnewVersion=$NEXT_VERSION -DgenerateBackupPoms=false > /dev/null
+
+echo Committing changes
+git add -A
+git commit -m "chore: release v$NEXT_VERSION"
+git tag -a "v$NEXT_VERSION" -m "v$NEXT_VERSION"
 #git push --follow-tags origin master
-#
-#echo "Waiting 30 seconds before bumping dev version"
-#sleep 30
-#
-#mvn versions:set -DnewSnapshotVersion=true -DgenerateBackupPoms=false
+
+echo "Waiting 60 seconds before bumping dev version"
+sleep 5
+
+DEV_VERSION=$(./git-semver next --pre-release-tag=SNAPSHOT)
+echo "Bumping dev version to $DEV_VERSION"
+mvn versions:set -DnewVersion=$DEV_VERSION -DgenerateBackupPoms=false > /dev/null
+git add -A
+git commit -m "chore: prepare for next development iteration"
+#git push --follow-tags origin master
+
+echo "Done!"
