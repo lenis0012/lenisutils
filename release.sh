@@ -31,18 +31,18 @@ mvn versions:set -DnewVersion=$NEXT_VERSION -DgenerateBackupPoms=false > /dev/nu
 
 echo Committing changes
 git add -A
-git commit -m "chore: release v$NEXT_VERSION"
+git commit -m "chore(release): release v$NEXT_VERSION"
 git tag -a "v$NEXT_VERSION" -m "v$NEXT_VERSION"
 git push --follow-tags origin master
 
 echo "Waiting 60 seconds before bumping dev version"
-sleep 5
+sleep 60
 
 DEV_VERSION=$(./git-semver next --pre-release-tag=SNAPSHOT)
 echo "Bumping dev version to $DEV_VERSION"
 mvn versions:set -DnewVersion=$DEV_VERSION -DgenerateBackupPoms=false > /dev/null
 git add -A
-git commit -m "chore: prepare for next development iteration"
+git commit -m "chore(release): prepare for next development iteration [skip ci]"
 git push origin master
 
 echo "Done!"
