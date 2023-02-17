@@ -59,16 +59,6 @@
                 <version>0.2.0</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.0-M7</version>
-                <configuration>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
-                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
-                    <scmCommentPrefix>chore(release): </scmCommentPrefix>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M8</version>
             </plugin>
@@ -90,7 +80,6 @@
     <scm>
         <url>https://github.com/lenis0012/lenisutils</url>
         <developerConnection>scm:git:ssh://git@github.com/lenisutils.git</developerConnection>
-        <tag>v2.0.2</tag>
     </scm>
 
     <distributionManagement>
