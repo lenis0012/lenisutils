@@ -165,7 +165,9 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
     @Override
     public void connectionClosed(ConnectionEvent event) {
         activeRequests.decrementAndGet();
-        shutdownMonitor.notify();
+        synchronized (shutdownMonitor) {
+            shutdownMonitor.notify();
+        }
         SqlPooledConnection connection = (SqlPooledConnection) event.getSource();
         if(connection.isClosed()) {
             availableCapacity.incrementAndGet();
@@ -185,12 +187,14 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
         this.closed = true;
         maintenanceTask.cancel();
 
-        while(activeRequests.get() > 0) {
-            try {
-                shutdownMonitor.wait(5000);
-            } catch (InterruptedException e) {
-                logger.log(Level.WARNING, "Failed to shutdown database connections during shutdown.");
-                break;
+        long deadline = System.currentTimeMillis() + 10000;
+        while (activeRequests.get() > 0 && System.currentTimeMillis() < deadline) {
+            synchronized (shutdownMonitor) {
+                try {
+                    shutdownMonitor.wait(5000);
+                } catch (InterruptedException e) {
+                    logger.log(Level.WARNING, "Interrupted while waiting for connections to close.", e);
+                }
             }
         }
 

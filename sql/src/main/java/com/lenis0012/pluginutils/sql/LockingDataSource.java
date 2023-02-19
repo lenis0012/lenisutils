@@ -80,7 +80,9 @@ public class LockingDataSource implements DataSource, ConnectionEventListener, C
     public void connectionClosed(ConnectionEvent event) {
         activeRequests.decrementAndGet();
         lock.unlock();
-        shutdownMonitor.notify();
+        synchronized (shutdownMonitor) {
+            shutdownMonitor.notify();
+        }
     }
 
     @Override
@@ -92,11 +94,14 @@ public class LockingDataSource implements DataSource, ConnectionEventListener, C
         this.closed = true;
 
         // Wait for all connections to be closed
-        while (activeRequests.get() > 0) {
-            try {
-                shutdownMonitor.wait(5000);
-            } catch (InterruptedException e) {
-                logger.log(Level.WARNING, "Interrupted while waiting for connections to close", e);
+        long deadline = System.currentTimeMillis() + 10000;
+        while (activeRequests.get() > 0 && System.currentTimeMillis() < deadline) {
+            synchronized (shutdownMonitor) {
+                try {
+                    shutdownMonitor.wait(5000);
+                } catch (InterruptedException e) {
+                    logger.log(Level.WARNING, "Interrupted while waiting for connections to close.", e);
+                }
             }
         }
 
