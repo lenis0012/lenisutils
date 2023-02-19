@@ -10,3 +10,13 @@
 ### Bug Fixes
 
 * changelog formatting
+
+## [2.2.0](https://github.com/lenis0012/lenisutils/compare/v2.1.9...v2.2.0)
+### Features
+
+* **docs** update readme
+
+### Bug Fixes
+
+* fix concurrency issues in datasource implementation
+* formatting in changelog
