@@ -20,3 +20,8 @@
 
 * fix concurrency issues in datasource implementation
 * formatting in changelog
+
+## [2.2.1](https://github.com/lenis0012/lenisutils/compare/v2.2.0...v2.2.1)
+### Bug Fixes
+
+* synchronize on shutdown monitor
