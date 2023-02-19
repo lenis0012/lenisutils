@@ -30,6 +30,8 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
     private final BukkitTask maintenanceTask;
     private final Logger logger;
     private boolean closed = false;
+    private AtomicInteger activeRequests = new AtomicInteger(0);
+    private final Object shutdownMonitor = new Object();
 
     public ConnectionPoolDataSource(Plugin plugin, String jdbcDriver, String jdbcUrl, int minSize, int maxSize,
                                     String username, String password, int connectionTimeout, int validationBypassThreshold, long validateInterval) {
@@ -47,7 +49,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
         }
         this.maintenanceTask = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             SqlPooledConnection last = connections.peekLast();
-            boolean validationNeeded = last != null && last.getLastUsedTime() > System.currentTimeMillis() - validationBypassThreshold;
+            boolean validationNeeded = last != null && (System.currentTimeMillis() - last.getLastUsedTime()) > validationBypassThreshold;
 
             // Verify all connections
             while(validationNeeded) {
@@ -55,7 +57,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
                 if (connection == null) {
                     break;
                 }
-                if (connection.getLastUsedTime() > System.currentTimeMillis() - validateInterval) {
+                if ((System.currentTimeMillis() - connection.getLastUsedTime()) > validateInterval) {
                     // Presumed active, return to end of pool
                     connections.addLast(connection);
                     break;
@@ -68,7 +70,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
                 tryClose(connection);
             }
 
-            if (availableCapacity.get() >= maxSize - minSize) {
+            if (availableCapacity.get() > maxSize - minSize) {
                 tryAddConnections(maxSize - minSize);
             }
         }, 0, 20 * 30);
@@ -116,6 +118,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
             throw new SQLException("Datasource is already closed.");
         }
 
+        activeRequests.incrementAndGet();
         if (connections.isEmpty() && availableCapacity.get() > 0) {
             if (availableCapacity.getAndDecrement() > 0) {
                 try {
@@ -123,6 +126,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
                     return connection.getConnection();
                 } catch (Exception e) {
                     availableCapacity.incrementAndGet();
+                    activeRequests.decrementAndGet();
                     throw e;
                 }
 
@@ -134,6 +138,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
         try {
             SqlPooledConnection connection = connections.pollFirst(60, TimeUnit.SECONDS);
             if (connection == null) {
+                activeRequests.decrementAndGet();
                 throw new RuntimeException("Couldn't retrieve a database connection in 60 seconds.");
             }
             if (connection.getLastUsedTime() < System.currentTimeMillis() - validationBypassThreshold) {
@@ -147,6 +152,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
 
             return connection.getConnection();
         } catch (InterruptedException e) {
+            activeRequests.decrementAndGet();
             throw new IllegalStateException();
         }
     }
@@ -158,30 +164,39 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
 
     @Override
     public void connectionClosed(ConnectionEvent event) {
+        activeRequests.decrementAndGet();
+        shutdownMonitor.notify();
+        SqlPooledConnection connection = (SqlPooledConnection) event.getSource();
+        if(connection.isClosed()) {
+            availableCapacity.incrementAndGet();
+            tryClose(connection);
+            return;
+        }
+
         connections.addFirst((SqlPooledConnection) event.getSource());
     }
 
     @Override
     public void connectionErrorOccurred(ConnectionEvent event) {
-        availableCapacity.incrementAndGet();
-        SqlPooledConnection connection = (SqlPooledConnection) event.getSource();
-        tryClose(connection);
     }
 
     @Override
     public void close() {
+        this.closed = true;
         maintenanceTask.cancel();
-        try {
-            while(availableCapacity.get() < maxPoolSize) {
-                SqlPooledConnection connection = connections.pollFirst(10, TimeUnit.SECONDS);
-                if (connection == null) {
-                    throw new IllegalStateException("Failed to shutdown database connection. no response after 120 seconds.");
-                }
-                availableCapacity.incrementAndGet();
-                tryClose(connection);
+
+        while(activeRequests.get() > 0) {
+            try {
+                shutdownMonitor.wait(5000);
+            } catch (InterruptedException e) {
+                logger.log(Level.WARNING, "Failed to shutdown database connections during shutdown.");
+                break;
             }
-        } catch (InterruptedException e) {
-            logger.log(Level.WARNING, "Failed to shutdown database connections during shutdown.");
+        }
+
+        SqlPooledConnection connection;
+        while((connection = connections.pollFirst()) != null) {
+            tryClose(connection);
         }
     }
 

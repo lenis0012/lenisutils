@@ -22,13 +22,8 @@ public class DataSourceBuilder {
     private int validationBypassThreshold = 500;
 
     public static DataSource sqlite(Plugin plugin, File file) {
-        DataSourceBuilder builder = new DataSourceBuilder();
-        builder.plugin = plugin;
-        builder.driver = "org.sqlite.JDBC";
-        builder.jdbcUrlTemplate = "jdbc:sqlite:" + file.getPath();
-        builder.validationBypassThreshold = Integer.MAX_VALUE;
-        builder.maxPoolSize = 1;
-        return builder.build();
+        String jdbcUrl = "jdbc:sqlite:" + file.getPath();
+        return new LockingDataSource(plugin, "org.sqlite.JDBC", jdbcUrl);
     }
 
     public static DataSourceBuilder mysqlBuilder(Plugin plugin) {
