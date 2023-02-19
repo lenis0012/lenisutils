@@ -25,3 +25,8 @@
 ### Bug Fixes
 
 * synchronize on shutdown monitor
+
+## [2.2.2](https://github.com/lenis0012/lenisutils/compare/v2.2.1...v2.2.2)
+### Bug Fixes
+
+* properly update active requests in datasource
