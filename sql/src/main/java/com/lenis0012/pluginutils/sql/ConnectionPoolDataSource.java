@@ -1,26 +1,24 @@
 package com.lenis0012.pluginutils.sql;
 
-import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.DataSource;
-import javax.sql.PooledConnection;
 import java.io.Closeable;
 import java.io.PrintWriter;
 import java.sql.*;
-import java.util.concurrent.BlockingDeque;
+import java.util.Deque;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConnectionPoolDataSource implements DataSource, ConnectionEventListener, Closeable {
-    private final BlockingDeque<SqlPooledConnection> connections = new LinkedBlockingDeque<>();
-    private final AtomicInteger availableCapacity;
+    private final Deque<SqlPooledConnection> connections = new LinkedBlockingDeque<>();
+    private final Semaphore semaphore;
     private final Plugin plugin;
     private final String jdbcUrl;
     private final String username;
@@ -35,7 +33,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
 
     public ConnectionPoolDataSource(Plugin plugin, String jdbcDriver, String jdbcUrl, int minSize, int maxSize,
                                     String username, String password, int connectionTimeout, int validationBypassThreshold, long validateInterval) {
-        this.availableCapacity = new AtomicInteger(maxSize);
+        this.semaphore = new Semaphore(maxSize);
         this.plugin = plugin;
         this.jdbcUrl = jdbcUrl;
         this.username = username;
@@ -66,27 +64,9 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
                     connections.addFirst(connection);
                     break;
                 }
-                availableCapacity.incrementAndGet();
                 tryClose(connection);
             }
-
-            if (availableCapacity.get() > maxSize - minSize) {
-                tryAddConnections(maxSize - minSize);
-            }
         }, 0, 20 * 30);
-    }
-
-    private void tryAddConnections(int desiredCapacity) {
-            try {
-                while (availableCapacity.getAndDecrement() > desiredCapacity) {
-                    SqlPooledConnection connection = createConnection();
-                    connections.addFirst(connection);
-                }
-            } catch (SQLException e) {
-                // ignore
-            } finally {
-                availableCapacity.incrementAndGet();
-            }
     }
 
     private SqlPooledConnection createConnection() throws SQLException {
@@ -119,41 +99,27 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
         }
 
         activeRequests.incrementAndGet();
-        if (connections.isEmpty() && availableCapacity.get() > 0) {
-            if (availableCapacity.getAndDecrement() > 0) {
-                try {
-                    SqlPooledConnection connection = createConnection();
-                    return connection.getConnection();
-                } catch (Exception e) {
-                    availableCapacity.incrementAndGet();
-                    activeRequests.decrementAndGet();
-                    throw e;
-                }
-
-            } else {
-                availableCapacity.incrementAndGet();
-            }
-        }
-
         try {
-            SqlPooledConnection connection = connections.pollFirst(60, TimeUnit.SECONDS);
-            if (connection == null) {
-                activeRequests.decrementAndGet();
-                throw new RuntimeException("Couldn't retrieve a database connection in 60 seconds.");
-            }
-            if (connection.getLastUsedTime() < System.currentTimeMillis() - validationBypassThreshold) {
-                if (!connection.isValid(5000)) {
-                    connection.removeConnectionEventListener(this);
-                    availableCapacity.incrementAndGet();
-                    tryClose(connection);
-                    return getConnection();
-                }
-            }
-
-            return connection.getConnection();
+            semaphore.acquire();
         } catch (InterruptedException e) {
             activeRequests.decrementAndGet();
-            throw new IllegalStateException();
+            throw new SQLException("Interrupted while waiting for a connection.", e);
+        }
+        try {
+            SqlPooledConnection connection = connections.pollFirst();
+            if (connection == null) {
+                connection = createConnection();
+            } else if((System.currentTimeMillis() - connection.getLastUsedTime()) > validationBypassThreshold) {
+                if (!connection.isValid(5000)) {
+                    tryClose(connection);
+                    connection = createConnection();
+                }
+            }
+            return connection.getConnection();
+        } catch (Exception e) {
+            activeRequests.decrementAndGet();
+            semaphore.release();
+            throw e;
         }
     }
 
@@ -164,18 +130,19 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
 
     @Override
     public void connectionClosed(ConnectionEvent event) {
-        activeRequests.decrementAndGet();
-        synchronized (shutdownMonitor) {
-            shutdownMonitor.notify();
-        }
         SqlPooledConnection connection = (SqlPooledConnection) event.getSource();
         if(connection.isClosed()) {
-            availableCapacity.incrementAndGet();
+            semaphore.release();
             tryClose(connection);
             return;
         }
 
         connections.addFirst((SqlPooledConnection) event.getSource());
+        semaphore.release();
+        activeRequests.decrementAndGet();
+        synchronized (shutdownMonitor) {
+            shutdownMonitor.notify();
+        }
     }
 
     @Override
@@ -191,7 +158,7 @@ public class ConnectionPoolDataSource implements DataSource, ConnectionEventList
         while (activeRequests.get() > 0 && System.currentTimeMillis() < deadline) {
             synchronized (shutdownMonitor) {
                 try {
-                    shutdownMonitor.wait(5000);
+                    shutdownMonitor.wait(Math.max(1, deadline - System.currentTimeMillis()));
                 } catch (InterruptedException e) {
                     logger.log(Level.WARNING, "Interrupted while waiting for connections to close.", e);
                 }

@@ -21,9 +21,9 @@ public class LockingDataSource implements DataSource, ConnectionEventListener, C
     private final Plugin plugin;
     private final String jdbcUrl;
     private final Logger logger;
+    private final ReentrantLock lock;
+    private final AtomicInteger activeRequests = new AtomicInteger(0);
     private SqlPooledConnection pooledConnection;
-    private ReentrantLock lock = new ReentrantLock();
-    private AtomicInteger activeRequests = new AtomicInteger(0);
     private boolean closed = false;
     private final Object shutdownMonitor = new Object();
 
@@ -32,6 +32,7 @@ public class LockingDataSource implements DataSource, ConnectionEventListener, C
         this.plugin = plugin;
         this.jdbcUrl = jdbcUrl;
         this.logger = plugin.getLogger();
+        this.lock = new ReentrantLock();
 
         loadDriver(jdbcDriver);
         this.pooledConnection = createConnection();
@@ -78,8 +79,8 @@ public class LockingDataSource implements DataSource, ConnectionEventListener, C
 
     @Override
     public void connectionClosed(ConnectionEvent event) {
-        activeRequests.decrementAndGet();
         lock.unlock();
+        activeRequests.decrementAndGet();
         synchronized (shutdownMonitor) {
             shutdownMonitor.notify();
         }

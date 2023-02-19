@@ -114,12 +114,7 @@ class ConnectionPoolDataSourceTest {
 
         executorService.shutdown();
         executorService.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS);
-        try {
-            dataSource.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            // ignore
-        }
+        dataSource.close();
         assertThat(count.get()).isEqualTo(10000);
     }
 
