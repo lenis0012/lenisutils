@@ -30,3 +30,9 @@
 ### Bug Fixes
 
 * properly update active requests in datasource
+
+## [2.3.0](https://github.com/lenis0012/lenisutils/compare/v2.2.2...v2.3.0)
+### Features
+
+* add manifest updater
+* add updater module
