@@ -38,7 +38,7 @@ git push --follow-tags origin master
 echo "Waiting 60 seconds before bumping dev version"
 sleep 60
 
-DEV_VERSION=$(echo ${NEXT_VERSION} | awk -F. -v OFS=. '{$NF += 1 ; print}')
+DEV_VERSION=$(echo ${NEXT_VERSION} | awk -F. -v OFS=. '{$NF += 1 ; print}')-SNAPSHOT
 echo "Bumping dev version to $DEV_VERSION"
 mvn versions:set -DnewVersion=$DEV_VERSION -DgenerateBackupPoms=false > /dev/null
 git add -A
