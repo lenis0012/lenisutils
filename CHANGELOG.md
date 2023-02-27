@@ -51,3 +51,8 @@
 ### Bug Fixes
 
 * version checker errors
+
+## [2.3.4](https://github.com/lenis0012/lenisutils/compare/v2.3.3...v2.3.4)
+### Bug Fixes
+
+* versioning in script
