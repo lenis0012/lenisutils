@@ -19,6 +19,7 @@
         <module>packet</module>
         <module>sql</module>
         <module>updater-api</module>
+        <module>updater-manifest</module>
     </modules>
 
     <repositories>

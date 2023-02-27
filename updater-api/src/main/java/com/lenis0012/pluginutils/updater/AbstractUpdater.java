@@ -30,21 +30,15 @@ import java.util.logging.Level;
 
 public abstract class AbstractUpdater implements Updater {
     protected final Plugin plugin;
-    protected String downloadCommand;
     protected BukkitTask task;
     private VersionNumber currentVersion;
     private Version latestVersion;
 
-    public AbstractUpdater(Plugin plugin, String downloadCommand, Duration frequency) {
+    public AbstractUpdater(Plugin plugin, Duration frequency) {
         this.plugin = plugin;
-        this.downloadCommand = downloadCommand;
         this.currentVersion = VersionNumber.of(plugin.getDescription().getVersion());
         this.task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, this::check, 0L,
                 frequency.getSeconds() * 20L);
-
-        if(downloadCommand == null) {
-            this.downloadCommand = "/" + plugin.getName() + ":updater download";
-        }
 
         plugin.getServer().getPluginManager().registerEvents(new CommandInterceptor(), plugin);
     }
@@ -159,7 +153,7 @@ public abstract class AbstractUpdater implements Updater {
         if(latestVersion.getDownloadUrl() != null) {
             footer.append("[Download]").color(ChatColor.GREEN).bold(true)
                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to download the update").create()))
-                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, downloadCommand)).append("  ");
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + plugin.getName() + ":updater download")).append("  ");
         }
         footer.append("[Changelog]").color(ChatColor.GREEN).bold(true)
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to view the changelog").create()))

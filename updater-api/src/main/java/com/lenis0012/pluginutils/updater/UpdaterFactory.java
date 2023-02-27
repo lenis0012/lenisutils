@@ -13,21 +13,20 @@ public interface UpdaterFactory {
 
     Updater getUpdater(Plugin plugin);
 
-    UpdaterFactory withDownloadPrompt(String downloadCommand);
+    boolean isCompatible(Plugin plugin);
 
     UpdaterFactory withChannel(UpdateChannel channel);
 
     UpdaterFactory withFrequency(Duration updateInterval);
 
-    UpdaterFactory withConfiguration(Map<String, Object> configuration);
-
     Set<Capability> capabilities();
 
-    static UpdaterFactory provideBest(ClassLoader loader) {
+    static UpdaterFactory provideBest(Plugin plugin, ClassLoader loader) {
         ServiceLoader<UpdaterFactory> serviceLoader = ServiceLoader.load(UpdaterFactory.class, loader);
         return StreamSupport.stream(serviceLoader.spliterator(), false)
-                .max(Comparator.comparingInt(factory -> factory.capabilities().size()))
-                .orElseThrow(() -> new IllegalStateException("No updater implementation found"));
+            .filter(factory -> factory.isCompatible(plugin))
+            .max(Comparator.comparingInt(factory -> factory.capabilities().size()))
+            .orElseThrow(() -> new IllegalStateException("No updater implementation found"));
     }
 
     enum Capability {

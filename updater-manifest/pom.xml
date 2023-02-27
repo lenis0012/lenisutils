@@ -9,19 +9,25 @@
         <version>2.2.3</version>
     </parent>
 
-    <artifactId>lenisutils-updater-api</artifactId>
+    <artifactId>lenisutils-updater-manifest</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.lenis0012.pluginutils</groupId>
+            <artifactId>lenisutils-updater-api</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
         </dependency>
     </dependencies>
 </project>
