@@ -67,11 +67,11 @@ public class ManifestUpdater extends AbstractUpdater {
     private Version parseVersion(JsonObject info) {
         return Version.builder()
             .versionNumber(VersionNumber.of(info.get("version").getAsString()))
-            .downloadUrl(info.has("download-url") ? info.get("download-url").getAsString() : null)
-            .changelogUrl(info.has("changelog-url") ?  info.get("changelog-url").getAsString() : null)
+            .downloadUrl(info.has("downloadUrl") ? info.get("downloadUrl").getAsString() : null)
+            .changelogUrl(info.has("changelogUrl") ?  info.get("changelogUrl").getAsString() : null)
             .channel(info.has("channel") ? UpdateChannel.valueOf(info.get("channel").getAsString()) : UpdateChannel.STABLE)
-            .minMinecraftVersion(info.has("min-mc-version") ? VersionNumber.of(info.get("min-mc-version").getAsString()) : null)
-            .maxMinecraftVersion(info.has("max-mc-version") ? VersionNumber.of(info.get("max-mc-version").getAsString()) : null)
+            .minMinecraftVersion(info.has("minMcVersion") ? VersionNumber.of(info.get("minMcVersion").getAsString()) : null)
+            .maxMinecraftVersion(info.has("maxMcVersion") ? VersionNumber.of(info.get("maxMcVersion").getAsString()) : null)
             .build();
     }
 

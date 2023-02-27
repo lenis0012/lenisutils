@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class VersionNumber {
     private final int[] parts;
@@ -50,14 +51,19 @@ public class VersionNumber {
         return Arrays.hashCode(parts);
     }
 
+    @Override
+    public String toString() {
+        return Arrays.stream(parts).mapToObj(String::valueOf).collect(Collectors.joining("."));
+    }
+
     public static VersionNumber of(String versionString) {
         Pattern pattern = Pattern.compile("\\d+\\.\\d+(\\.\\d)*");
         Matcher matcher = pattern.matcher(versionString);
-        if(!matcher.matches()) {
+        if(!matcher.find()) {
             throw new IllegalArgumentException("Invalid version string: " + versionString);
         }
 
-        String version = matcher.group();
+        String version = versionString.substring(matcher.start(), matcher.end());
         int[] parts = Arrays.stream(version.split("\\."))
                 .mapToInt(Integer::parseInt)
                 .toArray();
