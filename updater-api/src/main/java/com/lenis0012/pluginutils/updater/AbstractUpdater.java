@@ -82,7 +82,7 @@ public abstract class AbstractUpdater implements Updater {
                 url = new URL(latestVersion.getDownloadUrl());
                 input = url.openStream();
 
-                Method getFileMethod = plugin.getClass().getDeclaredMethod("getFile");
+                Method getFileMethod = JavaPlugin.class.getDeclaredMethod("getFile");
                 getFileMethod.setAccessible(true);
                 File file = (File) getFileMethod.invoke(plugin);
                 output = new FileOutputStream(new File(Bukkit.getUpdateFolderFile(), file.getName()));
@@ -129,7 +129,7 @@ public abstract class AbstractUpdater implements Updater {
         }
 
         player.spigot().sendMessage(new ComponentBuilder("A new version of ").retain(ComponentBuilder.FormatRetention.FORMATTING).color(ChatColor.GREEN)
-            .append(plugin.getName()).color(ChatColor.DARK_GREEN)
+            .append(plugin.getName()).retain(ComponentBuilder.FormatRetention.NONE).color(ChatColor.DARK_GREEN)
             .append(" is available: ")
             .append("v" + latestVersion.getVersionNumber().toString()).color(ChatColor.DARK_GREEN)
             .append(" (you are running ")
