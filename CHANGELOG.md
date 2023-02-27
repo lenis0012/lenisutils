@@ -41,3 +41,8 @@
 ### Bug Fixes
 
 * correctly parse non-standard version numbers
+
+## [2.3.2](https://github.com/lenis0012/lenisutils/compare/v2.3.1...v2.3.2)
+### Bug Fixes
+
+* correctly compare versions
