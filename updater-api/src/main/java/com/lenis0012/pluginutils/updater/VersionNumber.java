@@ -31,11 +31,11 @@ public class VersionNumber {
     }
 
     public boolean lessThan(VersionNumber other) {
-        return !other.greaterThanOrEqual(this);
+        return !greaterThanOrEqual(other);
     }
 
     public boolean lessThanOrEqual(VersionNumber other) {
-        return !other.greaterThan(this);
+        return !greaterThan(other);
     }
 
     @Override

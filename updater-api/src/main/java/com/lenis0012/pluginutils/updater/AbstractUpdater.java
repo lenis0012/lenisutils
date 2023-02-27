@@ -182,6 +182,7 @@ public abstract class AbstractUpdater implements Updater {
                     player.sendMessage(ChatColor.GREEN + "Update downloaded!");
                     player.sendMessage(ChatColor.GREEN + "Restart your server to apply the update.");
                 }).exceptionally(e -> {
+                    plugin.getLogger().log(Level.WARNING, "Failed to download update", e);
                     player.sendMessage(ChatColor.RED + "Failed to download update! Please download it manually from " + latestVersion.getDownloadUrl());
                     return null;
                 });

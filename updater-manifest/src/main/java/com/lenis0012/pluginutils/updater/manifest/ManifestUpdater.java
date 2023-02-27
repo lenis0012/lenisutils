@@ -68,7 +68,7 @@ public class ManifestUpdater extends AbstractUpdater {
         return Version.builder()
             .versionNumber(VersionNumber.of(info.get("version").getAsString()))
             .downloadUrl(info.has("downloadUrl") ? info.get("downloadUrl").getAsString() : null)
-            .changelogUrl(info.has("changelogUrl") ?  info.get("changelogUrl").getAsString() : null)
+            .changelogUrl(info.has("changelogUrl") ? info.get("changelogUrl").getAsString() : null)
             .channel(info.has("channel") ? UpdateChannel.valueOf(info.get("channel").getAsString()) : UpdateChannel.STABLE)
             .minMinecraftVersion(info.has("minMcVersion") ? VersionNumber.of(info.get("minMcVersion").getAsString()) : null)
             .maxMinecraftVersion(info.has("maxMcVersion") ? VersionNumber.of(info.get("maxMcVersion").getAsString()) : null)
