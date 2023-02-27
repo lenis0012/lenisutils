@@ -56,3 +56,8 @@
 ### Bug Fixes
 
 * versioning in script
+
+## [2.3.5](https://github.com/lenis0012/lenisutils/compare/v2.3.4...v2.3.5)
+### Bug Fixes
+
+* change formatting
