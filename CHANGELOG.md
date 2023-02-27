@@ -36,3 +36,8 @@
 
 * add manifest updater
 * add updater module
+
+## [2.3.1](https://github.com/lenis0012/lenisutils/compare/v2.3.0...v2.3.1)
+### Bug Fixes
+
+* correctly parse non-standard version numbers
