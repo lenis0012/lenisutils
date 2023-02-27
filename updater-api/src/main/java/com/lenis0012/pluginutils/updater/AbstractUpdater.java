@@ -129,18 +129,18 @@ public abstract class AbstractUpdater implements Updater {
         }
 
         player.spigot().sendMessage(new ComponentBuilder("A new version of ").retain(ComponentBuilder.FormatRetention.FORMATTING).color(ChatColor.GREEN)
-            .append(plugin.getName()).retain(ComponentBuilder.FormatRetention.NONE).color(ChatColor.DARK_GREEN)
+            .append(plugin.getName())
             .append(" is available: ")
             .append("v" + latestVersion.getVersionNumber().toString()).color(ChatColor.DARK_GREEN)
-            .append(" (you are running ")
+            .append(" (you are running ").color(ChatColor.GREEN)
             .append("v" + currentVersion.toString()).color(ChatColor.DARK_GREEN)
-            .append(")")
+            .append(")").color(ChatColor.GREEN)
             .create()
         );
 
         if (latestVersion.getMinMinecraftVersion() != null) {
-            ComponentBuilder builder = new ComponentBuilder("This version is made for Minecraft ").retain(ComponentBuilder.FormatRetention.FORMATTING).color(ChatColor.GREEN);
-            builder.append(VersionNumber.ofBukkit().toString()).color(ChatColor.DARK_GREEN);
+            ComponentBuilder builder = new ComponentBuilder("This version is made for Minecraft ").color(ChatColor.GREEN);
+            builder.append(latestVersion.getMinMinecraftVersion().toString()).color(ChatColor.DARK_GREEN);
             if(latestVersion.getMaxMinecraftVersion() != null) {
                 builder.append(" - " + latestVersion.getMaxMinecraftVersion()).color(ChatColor.DARK_GREEN);
             } else {
