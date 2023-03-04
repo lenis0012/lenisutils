@@ -61,3 +61,8 @@
 ### Bug Fixes
 
 * change formatting
+
+## [2.4.0](https://github.com/lenis0012/lenisutils/compare/v2.3.5...v2.4.0)
+### Features
+
+* **updater** show message after dismissal
