@@ -47,11 +47,37 @@ public abstract class AbstractUpdater implements Updater {
         try {
             this.latestVersion = fetchLatestVersion();
         } catch(Exception e) {
-            // ignore
+            verboseLog("Failed to fetch latest version", e);
         }
     }
 
     protected abstract Version fetchLatestVersion();
+
+    protected boolean isCompatible(Version version, UpdateChannel targetChannel) {
+        VersionNumber bukkitVersion = VersionNumber.ofBukkit();
+        if (version.getMinMinecraftVersion() != null && version.getMinMinecraftVersion().greaterThan(bukkitVersion)) {
+            return false;
+        }
+        if (version.getMaxMinecraftVersion() != null && version.getMaxMinecraftVersion().lessThan(bukkitVersion)) {
+            return false;
+        }
+        if(version.getChannel() != null && version.getChannel().ordinal() > targetChannel.ordinal()) {
+            return false;
+        }
+        return true;
+    }
+
+    protected void verboseLog(String message) {
+        if(plugin.getDescription().getVersion().contains("SNAPSHOT")) {
+            plugin.getLogger().log(Level.WARNING, message);
+        }
+    }
+
+    protected void verboseLog(String message, Exception e) {
+        if(plugin.getDescription().getVersion().contains("SNAPSHOT")) {
+            plugin.getLogger().log(Level.WARNING, message, e);
+        }
+    }
 
     @Override
     public boolean isUpdateAvailable() {
@@ -189,6 +215,7 @@ public abstract class AbstractUpdater implements Updater {
             } else if(event.getMessage().equals("/" + plugin.getName() + ":updater dismiss")) {
                 event.setCancelled(true);
                 player.getPersistentDataContainer().set(NamespacedKey.fromString("ignored-update", plugin), PersistentDataType.STRING, latestVersion.getVersionNumber().toString());
+                player.sendMessage(ChatColor.GREEN + "Update notifications dismissed for this version");
             }
         }
     }

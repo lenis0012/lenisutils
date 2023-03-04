@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.http.HttpClient;
 import java.time.Duration;
+import java.util.Locale;
 import java.util.logging.Level;
 
 public class ManifestUpdater extends AbstractUpdater {
@@ -42,7 +44,7 @@ public class ManifestUpdater extends AbstractUpdater {
 
         for(JsonElement versionElement : json.getAsJsonArray()) {
             Version version = parseVersion(versionElement.getAsJsonObject());
-            if(!isCompatible(version)) {
+            if(!isCompatible(version, channel)) {
                 continue;
             }
             return version;
@@ -50,26 +52,12 @@ public class ManifestUpdater extends AbstractUpdater {
         return null;
     }
 
-    private boolean isCompatible(Version version) {
-        VersionNumber bukkitVersion = VersionNumber.ofBukkit();
-        if (version.getMinMinecraftVersion() != null && version.getMinMinecraftVersion().greaterThan(bukkitVersion)) {
-            return false;
-        }
-        if (version.getMaxMinecraftVersion() != null && version.getMaxMinecraftVersion().lessThan(bukkitVersion)) {
-            return false;
-        }
-        if(version.getChannel() != null && version.getChannel().ordinal() > channel.ordinal()) {
-            return false;
-        }
-        return true;
-    }
-
     private Version parseVersion(JsonObject info) {
         return Version.builder()
             .versionNumber(VersionNumber.of(info.get("version").getAsString()))
             .downloadUrl(info.has("downloadUrl") ? info.get("downloadUrl").getAsString() : null)
             .changelogUrl(info.has("changelogUrl") ? info.get("changelogUrl").getAsString() : null)
-            .channel(info.has("channel") ? UpdateChannel.valueOf(info.get("channel").getAsString()) : UpdateChannel.STABLE)
+            .channel(info.has("channel") ? UpdateChannel.valueOf(info.get("channel").getAsString().toUpperCase(Locale.ROOT)) : UpdateChannel.STABLE)
             .minMinecraftVersion(info.has("minMcVersion") ? VersionNumber.of(info.get("minMcVersion").getAsString()) : null)
             .maxMinecraftVersion(info.has("maxMcVersion") ? VersionNumber.of(info.get("maxMcVersion").getAsString()) : null)
             .build();
@@ -92,7 +80,7 @@ public class ManifestUpdater extends AbstractUpdater {
 
             return jsonParser.parse(builder.toString());
         } catch(IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Failed to fetch update from url " + downloadURL);
+            verboseLog("Failed to read JSON from URL: " + downloadURL, e);
             return null;
         } finally {
             if(reader != null) {
