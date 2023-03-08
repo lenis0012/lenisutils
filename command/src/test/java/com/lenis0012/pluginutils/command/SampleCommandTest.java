@@ -1,7 +1,8 @@
 package com.lenis0012.pluginutils.command;
 
 import com.lenis0012.pluginutils.command.api.Command;
-import com.lenis0012.pluginutils.command.defaults.CommandDefaults;
+import com.lenis0012.pluginutils.command.defaults.BukkitDefaults;
+import com.lenis0012.pluginutils.command.defaults.JavaDefaults;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -63,7 +64,8 @@ class SampleCommandTest {
 
         CommandRegistry registry = new CommandRegistry(plugin);
         registry.register(new SampleCommand());
-        registry.register(new CommandDefaults());
+        registry.register(new BukkitDefaults());
+        registry.register(new JavaDefaults());
         registry.finishAndApply();
 
         CommandExecutor executor = executorCaptor.getValue();

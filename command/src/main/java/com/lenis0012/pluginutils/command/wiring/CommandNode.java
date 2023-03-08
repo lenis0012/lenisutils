@@ -137,9 +137,6 @@ public class CommandNode {
                 .flatMap(List::stream);
 
             return Stream.concat(selfStream, childStream)
-                .peek(x -> {
-                    Bukkit.getLogger().info("Path: " + path + " child: " + x.getBaseCommand());
-                })
                 .filter(entry -> entry.getBaseCommand().startsWith(path.toString()))
                 .map(entry -> {
                     String trimmedBasePath = entry.getBaseCommand().substring(path.toString().length()).trim();

@@ -87,7 +87,6 @@ public class CommandSourceWirer {
         }
 
         String name = last.substring(1, last.length() - 1);
-        Bukkit.getLogger().info("name: " + name);
         return Arrays.stream(method.getParameters())
             .filter(p -> p.getName().equalsIgnoreCase(name))
             .findFirst()

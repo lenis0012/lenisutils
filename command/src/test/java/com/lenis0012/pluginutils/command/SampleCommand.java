@@ -1,4 +1,4 @@
-package com.lenis0012.pluginutils.command.defaults;
+package com.lenis0012.pluginutils.command;
 
 import com.lenis0012.pluginutils.command.api.Command;
 import org.bukkit.Bukkit;

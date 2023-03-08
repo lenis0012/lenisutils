@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class CommandDefaults {
+public class BukkitDefaults {
 
     @Completion(Player.class)
     public List<String> completePlayer() {
@@ -80,33 +80,5 @@ public class CommandDefaults {
             throw new CommandException(DefaultMessages.INVALID_WORLD, input);
         }
         return world;
-    }
-
-    @Resolver(Boolean.class)
-    public Boolean resolveBoolean(String input) {
-        return Boolean.parseBoolean(input);
-    }
-    
-    @Resolver(String.class)
-    public String resolveString(String input) {
-        return input;
-    }
-    
-    @Resolver(Integer.class)
-    public Integer resolveInteger(String input) {
-        try {
-            return Integer.parseInt(input);
-        } catch(NumberFormatException e) {
-            throw new CommandException(DefaultMessages.INVALID_NUMBER, input);
-        }
-    }
-    
-    @Resolver(Double.class)
-    public Double resolveDouble(String input) {
-        try {
-            return Double.parseDouble(input);
-        } catch(NumberFormatException e) {
-            throw new CommandException(DefaultMessages.INVALID_NUMBER, input);
-        }
     }
 }

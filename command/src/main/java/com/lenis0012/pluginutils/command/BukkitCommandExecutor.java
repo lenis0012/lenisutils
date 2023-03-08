@@ -80,7 +80,6 @@ public class BukkitCommandExecutor implements CommandExecutor, TabCompleter {
             }
 
             String arg = args.length > 0 ? args[args.length - 1] : "";
-            Bukkit.getLogger().log(Level.INFO, arg + ", from: " + String.join(" ", args));
             CommandContext context = CommandContext.builder()
                 .sender(sender)
                 .command(command.getName())
