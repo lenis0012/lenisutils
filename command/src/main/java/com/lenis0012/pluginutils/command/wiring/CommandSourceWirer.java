@@ -64,14 +64,14 @@ public class CommandSourceWirer {
         if (index >= 0) {
             for (WiredResolver resolver : resolvers.getOrDefault(type, new LinkedList<>())) {
                 if (resolver.isContextual()) continue;
-                if (resolver.matches(fullPath, parameter.getType())) return resolver.withArgument(index);
+                if (resolver.matches(fullPath, parameter)) return resolver.withArgument(index);
             }
         }
 
         // Find contextual resolver
         for (WiredResolver resolver : resolvers.getOrDefault(type, new LinkedList<>())) {
             if (!resolver.isContextual()) continue;
-            if (resolver.matches(fullPath, parameter.getType())) return resolver;
+            if (resolver.matches(fullPath, parameter)) return resolver;
         }
 
         return null;

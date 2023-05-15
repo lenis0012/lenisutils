@@ -7,10 +7,10 @@ import com.lenis0012.pluginutils.command.api.Context;
 import com.lenis0012.pluginutils.command.api.Resolver;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public interface WiredResolver {
 
-    boolean matches(CommandPath input, Class<?> type);
+    boolean matches(CommandPath input, Parameter parameter);
 
     boolean isContextual();
 
@@ -38,26 +38,29 @@ public interface WiredResolver {
                 }
             })
             .collect(Collectors.toList());
-        return new DirectWiredResolver(source, method, method.isAnnotationPresent(Context.class), resolver.value(), resolver.path(), mappings);
+        return new DirectWiredResolver(source, method, WiringContext.ofResolver(method), resolver.value(), resolver.path(), mappings);
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     class DirectWiredResolver implements WiredResolver {
         private final CommandSource<?> source;
         private final Method method;
-        private final boolean contextual;
+        private final WiringContext wiringContext;
         private final Class<?> type;
         private final String path;
         private final List<BiFunction<CommandContext, String, Object>> paramaterMappings;
 
         @Override
-        public boolean matches(CommandPath input, Class<?> type) {
-            return this.type.equals(type) && CommandPath.matches(this.path, input.toString());
+        public boolean matches(CommandPath input, Parameter parameter) {
+            WiringContext desiredContext = WiringContext.ofParameter(parameter);
+            return this.type.equals(parameter.getType())
+                && CommandPath.matches(this.path, input.toString())
+                && (!desiredContext.isPresent() || wiringContext.equals(desiredContext));
         }
 
         @Override
         public boolean isContextual() {
-            return contextual;
+            return wiringContext.isPresent();
         }
 
         @Override
@@ -93,8 +96,8 @@ public interface WiredResolver {
         private final int index;
 
         @Override
-        public boolean matches(CommandPath input, Class<?> type) {
-            return resolver.matches(input, type);
+        public boolean matches(CommandPath input, Parameter parameter) {
+            return resolver.matches(input, parameter);
         }
 
         @Override

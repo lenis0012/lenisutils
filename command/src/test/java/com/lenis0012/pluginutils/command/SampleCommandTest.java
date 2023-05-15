@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -47,6 +48,7 @@ class SampleCommandTest {
         Bukkit.setServer(server);
         lenient().when(plugin.getServer()).thenReturn(server);
         lenient().when(server.getWorlds()).thenReturn(Arrays.asList(world));
+        lenient().when(server.getLogger()).thenReturn(Logger.getLogger("test"));
     }
 
     @Test
