@@ -25,9 +25,16 @@ echo Updating maven version
 mvn versions:set -DnewVersion=$NEXT_VERSION -DgenerateBackupPoms=false > /dev/null
 
 echo Updating changelog
-echo >> CHANGELOG.md
-echo "## [$NEXT_VERSION](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)" >> CHANGELOG.md
-(./git-semver log --markdown) >> CHANGELOG.md
+CH_OLD=`tail -n +1 CHANGELOG.md`
+CH_HEADER="## [$NEXT_VERSION](https://github.com/lenis0012/lenisutils/compare/v$CURRENT_VERSION...v$NEXT_VERSION)"
+CH_LOG=`./git-semver log --markdown`
+{
+  echo "# Changelog"
+  echo "$CH_HEADER"
+  echo "$CH_LOG"
+  echo
+  echo "$CH_OLD"
+} > CHANGELOG.md
 
 echo Committing changes
 git add -A
