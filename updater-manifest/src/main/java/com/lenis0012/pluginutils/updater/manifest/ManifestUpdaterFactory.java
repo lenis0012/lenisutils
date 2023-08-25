@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ManifestUpdaterFactory implements UpdaterFactory {
-    private Duration frequency = Duration.ofHours(3);
+    private Duration frequency = DEFAULT_FREQUENCY;
     private UpdateChannel channel = UpdateChannel.STABLE;
 
     @Override
@@ -59,7 +59,7 @@ public class ManifestUpdaterFactory implements UpdaterFactory {
     }
 
     @Override
-    public Set<Capability> capabilities() {
+    public Set<Capability> capabilities(Plugin plugin) {
         return new HashSet<>(Arrays.asList(
             Capability.VERSION_CHECK,
             Capability.COMPATIBILITY_CHECK,
