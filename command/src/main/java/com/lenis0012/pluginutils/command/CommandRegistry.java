@@ -2,13 +2,15 @@ package com.lenis0012.pluginutils.command;
 
 import com.lenis0012.pluginutils.command.api.Command;
 import com.lenis0012.pluginutils.command.api.Description;
-import com.lenis0012.pluginutils.command.api.MessageProcessor;
+import com.lenis0012.pluginutils.command.api.message.MessageProcessor;
 import com.lenis0012.pluginutils.command.api.Permission;
+import com.lenis0012.pluginutils.command.platform.BukkitPlatform;
+import com.lenis0012.pluginutils.command.platform.Platform;
 import com.lenis0012.pluginutils.command.wiring.CommandNode;
 import com.lenis0012.pluginutils.command.wiring.CommandPath;
+import com.lenis0012.pluginutils.command.wiring.CommandSource;
 import com.lenis0012.pluginutils.command.wiring.CommandSourceWirer;
 import com.lenis0012.pluginutils.command.wiring.WiredCommand;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -17,14 +19,18 @@ import java.util.List;
 import java.util.Map;
 
 public class CommandRegistry {
-    private final Plugin plugin;
+    private final Platform platform;
     private final List<CommandSource<?>> sources = new ArrayList<>();
     private final CommandSourceWirer wirer = new CommandSourceWirer();
     private final Map<String, CommandNode> rootNodes = new HashMap<>();
     private MessageProcessor messageProcessor = MessageProcessor.DEFAULT;
 
-    public CommandRegistry(Plugin plugin) {
-        this.plugin = plugin;
+    public static CommandRegistry ofBukkitPlugin(Plugin plugin) {
+        return new CommandRegistry(new BukkitPlatform(plugin));
+    }
+
+    public CommandRegistry(Platform platform) {
+        this.platform = platform;
     }
 
     public CommandRegistry setMessageProcessor(MessageProcessor messageProcessor) {
@@ -46,16 +52,7 @@ public class CommandRegistry {
             .flatMap(source -> wirer.wire(source).stream())
             .forEach(this::apply);
         Map<String, CommandNode> tree = new HashMap<>(rootNodes);
-        BukkitCommandExecutor executor = new BukkitCommandExecutor(tree, messageProcessor);
-        rootNodes.keySet().forEach(rootKey -> {
-            String commandName = rootKey.substring(1);
-            PluginCommand pluginCommand = plugin.getServer().getPluginCommand(commandName);
-            if(pluginCommand == null) {
-                throw new IllegalStateException("Command " + commandName + " not found in plugin yml!");
-            }
-            pluginCommand.setExecutor(executor);
-            pluginCommand.setTabCompleter(executor);
-        });
+        platform.registerCommands(tree, messageProcessor);
         return this;
     }
 

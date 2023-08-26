@@ -3,8 +3,8 @@ package com.lenis0012.pluginutils.command.wiring;
 import com.lenis0012.pluginutils.command.api.CommandContext;
 import com.lenis0012.pluginutils.command.api.CommandException;
 import com.lenis0012.pluginutils.command.api.HelpContext;
-import com.lenis0012.pluginutils.command.api.HelpMessage;
-import com.lenis0012.pluginutils.command.defaults.DefaultMessages;
+import com.lenis0012.pluginutils.command.api.message.HelpMessage;
+import com.lenis0012.pluginutils.command.defaults.CommandErrorMessage;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,12 +14,10 @@ import lombok.Value;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -68,7 +66,7 @@ public class CommandNode {
         for (CommandNode child : children) {
             if (child.matches(argument)) {
                 if (child.permission != null && !permissible.hasPermission(child.permission)) {
-                    throw new CommandException(DefaultMessages.NO_PERMISSION);
+                    throw new CommandException(CommandErrorMessage.NO_PERMISSION);
                 }
                 return child;
             }

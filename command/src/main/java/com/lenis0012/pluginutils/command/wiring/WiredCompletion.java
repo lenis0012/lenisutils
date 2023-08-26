@@ -1,6 +1,5 @@
 package com.lenis0012.pluginutils.command.wiring;
 
-import com.lenis0012.pluginutils.command.CommandSource;
 import com.lenis0012.pluginutils.command.api.CommandContext;
 import com.lenis0012.pluginutils.command.api.Completion;
 import lombok.RequiredArgsConstructor;

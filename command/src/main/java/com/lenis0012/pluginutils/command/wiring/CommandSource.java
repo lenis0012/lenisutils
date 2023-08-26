@@ -1,4 +1,4 @@
-package com.lenis0012.pluginutils.command;
+package com.lenis0012.pluginutils.command.wiring;
 
 import lombok.Value;
 

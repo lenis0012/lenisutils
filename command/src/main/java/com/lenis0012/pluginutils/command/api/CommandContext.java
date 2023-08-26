@@ -9,17 +9,9 @@ import org.bukkit.entity.Player;
 @Builder
 @Value
 public class CommandContext {
-    CommandSender sender;
+    CommandAuthor author;
     String command;
     String[] args;
     String label;
     HelpContext helpContext;
-
-    public boolean isPlayerSender() {
-        return sender instanceof Player;
-    }
-
-    public Player getPlayerSender() {
-        return (Player) sender;
-    }
 }

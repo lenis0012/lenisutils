@@ -1,4 +1,4 @@
-package com.lenis0012.pluginutils.command.api;
+package com.lenis0012.pluginutils.command.api.message;
 
 public class HelpMessage implements Message {
     @Override

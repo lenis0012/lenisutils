@@ -5,6 +5,7 @@ import com.lenis0012.pluginutils.command.api.CommandException;
 import com.lenis0012.pluginutils.command.api.Completion;
 import com.lenis0012.pluginutils.command.api.Context;
 import com.lenis0012.pluginutils.command.api.Resolver;
+import com.lenis0012.pluginutils.command.platform.BukkitCommandAuthor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -28,7 +29,7 @@ public class BukkitDefaults {
     public Player resolvePlayer(String input) {
         Player player = Bukkit.getPlayer(input);
         if(player == null) {
-            throw new CommandException(DefaultMessages.INVALID_PLAYER, input);
+            throw new CommandException(CommandErrorMessage.INVALID_PLAYER, input);
         }
         return player;
     }
@@ -36,20 +37,23 @@ public class BukkitDefaults {
     @Context
     @Resolver(CommandSender.class)
     public CommandSender resolveSender(CommandContext context) {
-        return context.getSender();
+        return ((BukkitCommandAuthor) context.getAuthor()).getSender();
     }
 
     @Context
     @Resolver(Player.class)
     public Player resolvePlayerSender(CommandContext context) {
-        return context.getPlayerSender();
+        if(!context.getAuthor().isPlayer()) {
+            throw new CommandException(CommandErrorMessage.EXECUTOR_NOT_PLAYER);
+        }
+        return (Player) ((BukkitCommandAuthor) context.getAuthor()).getSender();
     }
     
     @Resolver(OfflinePlayer.class)
     public OfflinePlayer resolveOfflinePlayer(String input) {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(input);
         if(offlinePlayer == null || !offlinePlayer.hasPlayedBefore()) {
-            throw new CommandException(DefaultMessages.INVALID_OFFLINE_PLAYER, input);
+            throw new CommandException(CommandErrorMessage.INVALID_OFFLINE_PLAYER, input);
         }
         return offlinePlayer;
     }
@@ -63,7 +67,7 @@ public class BukkitDefaults {
     public Material resolveMaterial(String input) {
         Material material = Material.matchMaterial(input.toUpperCase(Locale.ROOT));
         if(material == null) {
-            throw new CommandException(DefaultMessages.INVALID_MATERIAL, input);
+            throw new CommandException(CommandErrorMessage.INVALID_MATERIAL, input);
         }
         return material;
     }
@@ -77,7 +81,7 @@ public class BukkitDefaults {
     public World resolveWorld(String input) {
         World world = Bukkit.getWorld(input);
         if(world == null) {
-            throw new CommandException(DefaultMessages.INVALID_WORLD, input);
+            throw new CommandException(CommandErrorMessage.INVALID_WORLD, input);
         }
         return world;
     }

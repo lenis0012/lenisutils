@@ -1,9 +1,9 @@
-package com.lenis0012.pluginutils.command;
+package com.lenis0012.pluginutils.command.platform;
 
 import com.lenis0012.pluginutils.command.api.CommandContext;
 import com.lenis0012.pluginutils.command.api.CommandException;
-import com.lenis0012.pluginutils.command.api.MessageProcessor;
-import com.lenis0012.pluginutils.command.defaults.DefaultMessages;
+import com.lenis0012.pluginutils.command.api.message.MessageProcessor;
+import com.lenis0012.pluginutils.command.defaults.CommandErrorMessage;
 import com.lenis0012.pluginutils.command.wiring.CommandNode;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -33,7 +33,7 @@ public class BukkitCommandExecutor implements CommandExecutor, TabCompleter {
         }
 
         CommandContext.CommandContextBuilder context = CommandContext.builder()
-            .sender(sender)
+            .author(new BukkitCommandAuthor(sender))
             .command(command.getName())
             .helpContext(node.getHelpContext(sender))
             .label(label)
@@ -43,7 +43,7 @@ public class BukkitCommandExecutor implements CommandExecutor, TabCompleter {
             for(String arg : args) {
                 CommandNode child = node.getChild(arg, sender);
                 if(child == null) {
-                    messageProcessor.process(context.build(), DefaultMessages.INVALID_ARGUMENT, arg, "/" + label);
+                    messageProcessor.process(context.build(), CommandErrorMessage.INVALID_ARGUMENT, arg, "/" + label);
                     return true;
                 }
 
@@ -56,7 +56,7 @@ public class BukkitCommandExecutor implements CommandExecutor, TabCompleter {
             messageProcessor.process(context.build(), e.getUserMessage(), e.getArgs());
         } catch (Exception e) {
             Bukkit.getLogger().log(Level.SEVERE, "An error occurred while executing command: " + command.getName(), e);
-            messageProcessor.process(context.build(), DefaultMessages.INTERNAL_ERROR);
+            messageProcessor.process(context.build(), CommandErrorMessage.INTERNAL_ERROR);
         }
         return true;
     }
@@ -81,7 +81,7 @@ public class BukkitCommandExecutor implements CommandExecutor, TabCompleter {
 
             String arg = args.length > 0 ? args[args.length - 1] : "";
             CommandContext context = CommandContext.builder()
-                .sender(sender)
+                .author(new BukkitCommandAuthor(sender))
                 .command(command.getName())
                 .label(label)
                 .args(args)

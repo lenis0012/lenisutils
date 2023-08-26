@@ -1,7 +1,5 @@
 package com.lenis0012.pluginutils.command.api;
 
-import com.lenis0012.pluginutils.command.defaults.DefaultMessages;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;

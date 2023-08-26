@@ -20,7 +20,7 @@ public class JavaDefaults {
         try {
             return Integer.parseInt(input);
         } catch(NumberFormatException e) {
-            throw new CommandException(DefaultMessages.INVALID_NUMBER, input);
+            throw new CommandException(CommandErrorMessage.INVALID_NUMBER, input);
         }
     }
 
@@ -29,7 +29,7 @@ public class JavaDefaults {
         try {
             return Double.parseDouble(input);
         } catch(NumberFormatException e) {
-            throw new CommandException(DefaultMessages.INVALID_NUMBER, input);
+            throw new CommandException(CommandErrorMessage.INVALID_NUMBER, input);
         }
     }
 }

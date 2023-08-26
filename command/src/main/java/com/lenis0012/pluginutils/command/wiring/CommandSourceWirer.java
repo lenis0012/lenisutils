@@ -1,10 +1,8 @@
 package com.lenis0012.pluginutils.command.wiring;
 
-import com.lenis0012.pluginutils.command.CommandSource;
 import com.lenis0012.pluginutils.command.api.Command;
 import com.lenis0012.pluginutils.command.api.Completion;
 import com.lenis0012.pluginutils.command.api.Resolver;
-import org.bukkit.Bukkit;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

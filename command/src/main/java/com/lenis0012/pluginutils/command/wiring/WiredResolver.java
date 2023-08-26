@@ -1,9 +1,7 @@
 package com.lenis0012.pluginutils.command.wiring;
 
-import com.lenis0012.pluginutils.command.CommandSource;
 import com.lenis0012.pluginutils.command.api.CommandContext;
 import com.lenis0012.pluginutils.command.api.CommandException;
-import com.lenis0012.pluginutils.command.api.Context;
 import com.lenis0012.pluginutils.command.api.Resolver;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

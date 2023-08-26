@@ -64,7 +64,7 @@ class SampleCommandTest {
         org.bukkit.command.Command bukkitCommand = mock(org.bukkit.command.Command.class);
         when(bukkitCommand.getName()).thenReturn("sample");
 
-        CommandRegistry registry = new CommandRegistry(plugin);
+        CommandRegistry registry = CommandRegistry.ofBukkitPlugin(plugin);
         registry.register(new SampleCommand());
         registry.register(new BukkitDefaults());
         registry.register(new JavaDefaults());

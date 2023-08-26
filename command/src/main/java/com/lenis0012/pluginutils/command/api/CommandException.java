@@ -1,5 +1,7 @@
 package com.lenis0012.pluginutils.command.api;
 
+import com.lenis0012.pluginutils.command.api.message.Message;
+
 public class CommandException extends RuntimeException {
     private final Message message;
     private final Object[] args;

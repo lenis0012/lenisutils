@@ -1,4 +1,4 @@
-package com.lenis0012.pluginutils.command.api;
+package com.lenis0012.pluginutils.command.api.message;
 
 public interface Message {
 
@@ -8,6 +8,10 @@ public interface Message {
 
     default boolean isHelpMessage() {
         return false;
+    }
+
+    default boolean isErrorMessage() {
+        return name().startsWith("ERROR_");
     }
 
     static Message ofNamed(String name, String template) {
