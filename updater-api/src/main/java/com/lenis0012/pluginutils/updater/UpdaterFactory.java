@@ -40,8 +40,9 @@ public interface UpdaterFactory {
 
         ServiceLoader<UpdaterFactory> serviceLoader = ServiceLoader.load(UpdaterFactory.class, loader);
         return StreamSupport.stream(serviceLoader.spliterator(), false)
+            .sorted(Comparator.comparingInt(toSupportLevel))
             .filter(factory -> factory.isCompatible(plugin))
-            .max(Comparator.comparingInt(toSupportLevel))
+            .findFirst()
             .orElseThrow(() -> new IllegalStateException("No updater implementation present. Service files missing?"));
     }
 

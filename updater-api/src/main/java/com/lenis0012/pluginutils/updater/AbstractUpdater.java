@@ -175,17 +175,17 @@ public abstract class AbstractUpdater implements Updater {
             player.spigot().sendMessage(builder.create());
         }
 
-        ComponentBuilder footer = new ComponentBuilder("    ");
+        ComponentBuilder footer = new ComponentBuilder("  ");
         if(latestVersion.getDownloadUrl() != null) {
-            footer.append("[Download]").color(ChatColor.GREEN).bold(true)
+            footer.append("  ").append("[Download]").color(ChatColor.GREEN).bold(true)
                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to download the update").create()))
-                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + plugin.getName() + ":updater download")).append("  ");
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + plugin.getName() + ":updater download"));
         }
-        footer.append("[Changelog]").color(ChatColor.GREEN).bold(true)
+        footer.append("  ").append("[Changelog]").color(ChatColor.GREEN).bold(true)
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to view the changelog").create()))
-                .event(new ClickEvent(ClickEvent.Action.OPEN_URL, latestVersion.getChangelogUrl())).append("  ");
+                .event(new ClickEvent(ClickEvent.Action.OPEN_URL, latestVersion.getChangelogUrl()));
         if (VersionNumber.ofBukkit().greaterThanOrEqual(VersionNumber.of("1.16"))) {
-            footer.append("Dismiss").color(ChatColor.GRAY).bold(true)
+            footer.append("  ").append("Dismiss").color(ChatColor.GRAY).bold(true)
                     .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to dismiss this message").create()))
                     .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + plugin.getName() + ":updater dismiss"));
         }
