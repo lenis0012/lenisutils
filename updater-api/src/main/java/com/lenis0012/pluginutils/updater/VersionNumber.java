@@ -3,6 +3,7 @@ package com.lenis0012.pluginutils.updater;
 import org.bukkit.Bukkit;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,5 +73,18 @@ public class VersionNumber {
 
     public static VersionNumber ofBukkit() {
         return of(Objects.requireNonNull(Bukkit.getServer().getBukkitVersion(), "Bukkit version is null"));
+    }
+
+    public static Comparator<VersionNumber> comparator() {
+        return (a, b) -> {
+            for(int i = 0; i < a.parts.length && i < b.parts.length; i++) {
+                if(a.parts[i] > b.parts[i]) {
+                    return 1;
+                } else if(a.parts[i] < b.parts[i]) {
+                    return -1;
+                }
+            }
+            return 0;
+        };
     }
 }

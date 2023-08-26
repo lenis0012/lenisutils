@@ -20,6 +20,7 @@
         <module>sql</module>
         <module>updater-api</module>
         <module>updater-manifest</module>
+        <module>updater-bukkit</module>
     </modules>
 
     <repositories>
