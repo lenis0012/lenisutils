@@ -1,20 +1,18 @@
-lenisutils
+lenis' Plugin Utils
 ==========
-
-## Overview
-Lenisutils is a collection of utilities for bukkit plugins. 
+Lenisutils is a collection of utilities for bukkit plugins.
 Its goal is to provide embedded functionality that is very commonly needed for bukkit development.
 
 Lenisutils is split up into modules, each module has its own purpose and can be used independently of each other.
 Each module is designed to be lightweight, targeting a jar size of less than 20kb.
 
-### Modules
-* [Module system](#module-system) - A simple module system with support for service discovery, lifecycle management ~~and dependency injection~~
-* [Config](#config) - An annotation-driven configuration API with support for inline comments retention
-* [Updater](#updater) - A platform-agnostic update checker with a wide range of features
-* [SQL](#sql) - Utilities for setting up and working with MySQL and SQLite databases using a connection pool
+## Modules
+* Module system - A simple module system with support for service discovery, lifecycle management ~~and dependency injection~~
+* Config - An annotation-driven configuration API with support for inline comments retention
+* [Updater](updater-api/README.md) - A platform-agnostic update checker with a wide range of features
+* SQL - Utilities for setting up and working with MySQL and SQLite databases using a connection pool
 
-### Disclaimers
+## Disclaimers
 The `packet` module is old, deprecated and broken on newer versions. The `command` module is being reworked.
 These modules are currently not recommended for use.
 
@@ -23,9 +21,9 @@ Such modules include but are not limited to: packet framework, inventory/GUI fra
 
 This project is designed to be lightweight. Pull requests are welcome but are subject to rejection if they unnecessarily bloat the jar.
 
-## Installation
+# Installation
 
-### Maven
+## Maven
 To use lenisutils in your maven project, make sure that the codemc repository is added to your pom.xml:
 ```xml
 <repositories>
@@ -69,7 +67,7 @@ required for some modules (such as the updater) to function.
 </plugin>
 ```
 
-### Gradle
+## Gradle
 I don't use gradle for bukkit development but I do have some pointers on how you may configure it.  
 You should first of all include the dependency as an implementation dependency:
 ```groovy
@@ -100,3 +98,4 @@ shadowJar {
 ```
 
 You can now get your distribution jar by running `gradle shadowJar`.
+
