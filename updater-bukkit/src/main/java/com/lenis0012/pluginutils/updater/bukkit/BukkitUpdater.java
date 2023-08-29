@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 public class BukkitUpdater extends AbstractUpdater {
     private static final Pattern VERSION_TITLE_PATTERN = Pattern.compile("\\(MC [^)]+\\)");
     private static final Pattern VERSION_PATTERN = Pattern.compile("\\d+(\\.\\d+)+");
+    private static final Pattern FILE_URL_PATTERN = Pattern.compile("https://www\\.curseforge\\.com/minecraft/bukkit-plugins/loginsecurity/download/(\\d+)");
 
     private final Plugin plugin;
     private final JsonParser jsonParser = new JsonParser();
@@ -93,10 +94,18 @@ public class BukkitUpdater extends AbstractUpdater {
             }
         }
 
+        String changelogURL = null;
+        Matcher fileURLMatcher = FILE_URL_PATTERN.matcher(info.get("fileUrl").getAsString());
+        if(fileURLMatcher.find()) {
+            String fileId = fileURLMatcher.group(1);
+            changelogURL = "https://dev.bukkit.org/projects/loginsecurity/files/" + fileId;
+        }
+
         return Version.builder()
             .versionNumber(VersionNumber.of(name))
             .minMinecraftVersion(minimumVersion)
             .downloadUrl(downloadURL)
+            .changelogUrl(changelogURL)
             .build();
     }
 
